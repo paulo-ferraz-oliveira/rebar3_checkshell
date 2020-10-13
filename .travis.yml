@@ -1,0 +1,26 @@
+language: erlang
+
+os:
+  - linux
+
+otp_release:
+   - 19.3
+   - 20.3
+   - 21.3
+   - 22.3
+   - 23.1
+
+script:
+  - rebar3 --version
+  - erl -version
+  - rebar3 clean -a
+  - rebar3 compile
+  - rebar3 plugins upgrade rebar3_lint
+  - rebar3 plugins upgrade rebar3_proper
+  - rebar3 xref
+  - rebar3 dialyzer
+  - rebar3 lint
+  - rebar3 eunit
+  - rebar3 ct
+  - rebar3 proper
+  - rebar3 cover
