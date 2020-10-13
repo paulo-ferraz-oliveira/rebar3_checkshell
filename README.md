@@ -28,7 +28,8 @@ Add a `project_plugins` element to your `rebar.config`:
 Configuration
 -------------
 
-In your `rebar.config` add section `checkshell` and within it a pattern for the files to analyze.
+In your `rebar.config` add section `checkshell` and within the options as described below.
+The only compulsory option is `files`.
 
 ```erlang
 {checkshell, [
