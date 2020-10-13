@@ -33,19 +33,44 @@ There are nocompulsory options (all defaults are those assumed by `shellcheck`).
 
 ```erlang
 {checkshell, [
-    check_sourced, % Include warnings from sourced files
-    {color, auto | always | never}, % Use color (auto, always, never)
-    {include, ["CODE1", "CODE2"]}, % Consider only given types of warnings
-    {exclude, ["CODE1", "CODE2"]}, % Exclude types of warnings
-    {format, checkstyle | diff | gcc | json | json1 | quiet | tty}, % Output format (checkstyle, diff, gcc, json, json1, quiet, tty)
-    list_optional, % List checks disabled by default
-    norc, % Don't look for .shellcheckrc files
-    {enable, ["check1", "check2"] | all}, % List of optional checks to enable (or 'all')
-    {source_paths, "SOURCEPATHS"}, % Specify path when looking for sourced files ("SCRIPTDIR" for script's dir)
-    {shell, sh | bash | dash | ksh}, % Specify dialect (sh, bash, dash, ksh)
-    {severity, error | warning | info | style}, % Minimum severity of errors to consider (error, warning, info, style)
-    {wiki_link_count, NUM}, % The number of wiki links to show, when applicable
-    external_sources % Allow 'source' outside of FILES
+    % Include warnings from sourced files
+    check_sourced,
+
+    % Use color (auto, always, never)
+    {color, auto | always | never},
+
+    % Consider only given types of warnings
+    {include, ["CODE1", "CODE2"]},
+
+    % Exclude types of warnings
+    {exclude, ["CODE1", "CODE2"]},
+
+    % Output format (checkstyle, diff, gcc, json, json1, quiet, tty)
+    {format, checkstyle | diff | gcc | json | json1 | quiet | tty},
+
+    % List checks disabled by default
+    list_optional,
+
+    % Don't look for .shellcheckrc files
+    norc,
+
+    % List of optional checks to enable (or 'all')
+    {enable, ["check1", "check2"] | all},
+
+    % Specify path when looking for sourced files ("SCRIPTDIR" for script's dir)
+    {source_paths, "SOURCEPATHS"},
+
+    % Specify dialect (sh, bash, dash, ksh)
+    {shell, sh | bash | dash | ksh},
+
+    % Minimum severity of errors to consider (error, warning, info, style)
+    {severity, error | warning | info | style},
+
+    % The number of wiki links to show, when applicable
+    {wiki_link_count, NUM},
+
+    % Allow 'source' outside of FILES
+    external_sources
 ]}.
 ```
 
