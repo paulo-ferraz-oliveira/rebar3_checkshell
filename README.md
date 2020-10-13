@@ -1,6 +1,9 @@
 rebar3_checkshell
 =================
 
+[![](https://img.shields.io/hexpm/v/rebar3_checkshell.svg?style=flat)](https://hex.pm/packages/rebar3_checkshell)
+[![](https://travis-ci.org/paulo-ferraz-oliveira/rebar3_checkshell.png?branch=master)](https://travis-ci.org/paulo-ferraz-oliveira/rebar3_checkshell)
+
 `rebar3_checkshell` is a `rebar3` plugin that performs
 [ShellCheck](https://github.com/koalaman/shellcheck) static analysis on your scripts, while not
 having to install `shellcheck` locally.
@@ -28,13 +31,19 @@ Configuration
 In your `rebar.config` add section `checkshell` and within it a pattern for the files to analyze.
 
 ```erlang
-TODO
+{checkshell, [
+    {files, ["scripts/*.sh"]}
+]}.
 ```
 
 Command line options
 --------------------
 
-The only accepted option is TODO
+The only accepted command option is `--files`, used as
+
+```bash
+rebar3 checkshell --files=scripts/*.sh
+```
 
 Check it out
 ------------
