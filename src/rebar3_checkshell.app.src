@@ -1,5 +1,5 @@
 {application, rebar3_checkshell, [
-    {description, "FIXME"},
+    {description, "A rebar3 plugin to ease shellcheck'ing"},
     {vsn, git},
     {registered, []},
 
