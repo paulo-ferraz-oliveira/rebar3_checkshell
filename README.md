@@ -28,19 +28,31 @@ Add a `project_plugins` element to your `rebar.config`:
 Configuration
 -------------
 
-In your `rebar.config` add section `checkshell` and within the options as described below.
-The only compulsory option is `files`.
+In your `rebar.config`, add section `checkshell` and within it the options described below.
+There are nocompulsory options (all defaults are those assumed by `shellcheck`).
 
 ```erlang
 {checkshell, [
-    {files, ["scripts/*.sh"]}
+    check_sourced, % Include warnings from sourced files
+    {color, auto | always | never}, % Use color (auto, always, never)
+    {include, ["CODE1", "CODE2"]}, % Consider only given types of warnings
+    {exclude, ["CODE1", "CODE2"]}, % Exclude types of warnings
+    {format, checkstyle | diff | gcc | json | json1 | quiet | tty}, % Output format (checkstyle, diff, gcc, json, json1, quiet, tty)
+    list_optional, % List checks disabled by default
+    norc, % Don't look for .shellcheckrc files
+    {enable, ["check1", "check2"] | all}, % List of optional checks to enable (or 'all')
+    {source_paths, "SOURCEPATHS"}, % Specify path when looking for sourced files ("SCRIPTDIR" for script's dir)
+    {shell, sh | bash | dash | ksh}, % Specify dialect (sh, bash, dash, ksh)
+    {severity, error | warning | info | style}, % Minimum severity of errors to consider (error, warning, info, style)
+    {wiki_link_count, NUM}, % The number of wiki links to show, when applicable
+    external_sources % Allow 'source' outside of FILES
 ]}.
 ```
 
 Command line options
 --------------------
 
-The only accepted command option is `--files`, used as
+The only accepted (and compulsory) command option is `--files`, used as
 
 ```bash
 rebar3 checkshell --files=scripts/*.sh
