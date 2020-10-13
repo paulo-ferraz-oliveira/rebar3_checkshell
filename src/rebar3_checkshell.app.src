@@ -1,0 +1,18 @@
+{application, rebar3_checkshell, [
+    {description, "FIXME"},
+    {vsn, git},
+    {registered, []},
+
+    {applications, [
+        % OTP dependencies
+        kernel,
+        stdlib
+        % External dependencies
+    ]},
+
+    {included_applications, []},
+
+    {env, []},
+
+    {licenses, ["GNU General Public License 3.0"]}
+]}.
