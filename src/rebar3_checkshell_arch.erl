@@ -1,7 +1,6 @@
 -module(rebar3_checkshell_arch).
 
 -export([do/2]).
--export([do/3]).
 
 -define(SUCCESS, 0).
 
