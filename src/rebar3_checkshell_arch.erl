@@ -63,7 +63,7 @@ opt({include, Includes}) ->
              (Include, Acc) when is_list(Include) ->
                 Acc ++ "," ++ Include;
             (Include, Acc) ->
-                rebar_api:error("checkshell: non-string value for option include: ~p", [Include]),
+                rebar_api:warn("checkshell: non-string value for option include: ~p", [Include]),
                 Acc
         end,
         "",
@@ -76,7 +76,7 @@ opt({exclude, Excludes}) ->
             (Exclude, Acc) when is_list(Exclude) ->
                 Acc ++ "," ++ Exclude;
             (Exclude, Acc) ->
-                rebar_api:error("checkshell: non-string value for option exclude: ~p", [Exclude]),
+                rebar_api:warn("checkshell: non-string value for option exclude: ~p", [Exclude]),
                 Acc
         end,
         "",
@@ -97,7 +97,7 @@ opt({enable, Checks}) when is_list(Checks) ->
             (Check, Acc) when is_list(Check) ->
                 Acc ++ "," ++ Check;
             (Check, Acc) ->
-                rebar_api:error("checkshell: non-string value for option enable: ~p", [Check]),
+                rebar_api:warn("checkshell: non-string value for option enable: ~p", [Check]),
                 Acc
         end,
         "",
@@ -120,7 +120,8 @@ opt(external_sources) ->
 opt({files, Files}) when is_list(Files) ->
     " " ++ Files;
 opt(UnknownOption) ->
-    rebar_api:error("checkshell: unknown rebar.config option ~p", [UnknownOption]).
+    rebar_api:warn("checkshell: unknown rebar.config option ~p", [UnknownOption]),
+    "".
 
 port_loop(Port, Data) ->
     receive
