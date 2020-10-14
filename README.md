@@ -1,8 +1,8 @@
 rebar3_checkshell
 =================
 
-[![](https://img.shields.io/hexpm/v/rebar3_checkshell.svg?style=flat)](https://hex.pm/packages/rebar3_checkshell)
-[![](https://travis-ci.org/paulo-ferraz-oliveira/rebar3_checkshell.png?branch=master)](https://travis-ci.org/paulo-ferraz-oliveira/rebar3_checkshell)
+[![hexpm](https://img.shields.io/hexpm/v/rebar3_checkshell.svg?style=flat)](https://hex.pm/packages/rebar3_checkshell)
+[![travisci](https://travis-ci.org/paulo-ferraz-oliveira/rebar3_checkshell.png?branch=master)](https://travis-ci.org/paulo-ferraz-oliveira/rebar3_checkshell)
 
 `rebar3_checkshell` is a `rebar3` plugin that performs
 [ShellCheck](https://github.com/koalaman/shellcheck) static analysis on your scripts, while not
