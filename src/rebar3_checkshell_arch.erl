@@ -38,7 +38,7 @@ args(Files, State) ->
     OptsForShellCheck
         = lists:foldl(
               fun (OptFromRebarConfig, Acc) ->
-                    Acc ++ " " ++ opt(OptFromRebarConfig)
+                    Acc ++ opt(OptFromRebarConfig)
               end,
               "",
               OptsFromRebarConfig
@@ -105,7 +105,7 @@ opt({enable, Checks}) when is_list(Checks) ->
 opt({enable, all}) ->
     " --enable=all";
 opt({source_paths, SourcePaths}) when is_list(SourcePaths) ->
-    " --source-paths=" ++ SourcePaths;
+    " --source-path=" ++ SourcePaths;
 opt({shell, Shell}) when Shell =:= sh orelse Shell =:= bash orelse Shell =:= dash
                         orelse Shell =:= ksh ->
     " --shell=" ++ atom_to_list(Shell);
@@ -113,7 +113,7 @@ opt({severity, Severity}) when Severity =:= error orelse Severity =:= warning
                               orelse Severity =:= info orelse Severity =:= style ->
     " --severity=" ++ atom_to_list(Severity);
 opt({wiki_link_count, Num}) when is_integer(Num) andalso Num > 0 ->
-    " --wiki-link-count=" ++ Num;
+    " --wiki-link-count=" ++ integer_to_list(Num);
 opt(external_sources) ->
     " --external-sources";
 opt({files, Files}) when is_list(Files) ->
@@ -130,7 +130,7 @@ port_loop(Port, Data) ->
             {ExitStatus, Data}
     end.
 
-output_shellcheck_analysis(1 = _Failure, AnalysisRes) ->
+output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
     io:format("~s", [string:sub_string(AnalysisRes, 2)]);
 output_shellcheck_analysis(_Failure, AnalysisRes) ->
     io:format("~s", [AnalysisRes]).
