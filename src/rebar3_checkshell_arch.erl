@@ -9,16 +9,17 @@ do(Files, State) ->
     do(get_archs(), Files, State).
 
 do({true = _IsMacOS, false = _IsLinux, false = _IsWindows}, Files, State) ->
-    Exec = rebar3_checkshell_utils:priv_dir() ++ "/darwin.x86_64/shellcheck",
-    OpenPortCmd = {spawn, Exec ++ args(Files, State)},
-    OpenPortOpts = [exit_status],
-    result(port_loop(erlang:open_port(OpenPortCmd, OpenPortOpts), ""), State);
-do({false = _IsMacOS, true = _IsLinux, false = _IsWindows}, _Files, State) ->
-    %TODO: code me
-    io:format("linux"),
-    {ok, State};
+    do_unix_like("darwin", Files, State);
+do({false = _IsMacOS, true = _IsLinux, false = _IsWindows}, Files, State) ->
+    do_unix_like("linux", Files, State);
 do({false = _IsMacOS, false = _IsLinux, true = _IsWindows}, _Files, _State) ->
     {error, "checkshell: no support for Windows yet"}.
+
+do_unix_like(Arch, Files, State) ->
+    Exec = rebar3_checkshell_utils:priv_dir() ++ "/" ++ Arch ++ ".x86_64/shellcheck",
+    OpenPortCmd = {spawn, Exec ++ args(Files, State)},
+    OpenPortOpts = [exit_status],
+    result(port_loop(erlang:open_port(OpenPortCmd, OpenPortOpts), ""), State).
 
 result({?SUCCESS, _AnalysisRes}, State) ->
     {ok, State};
