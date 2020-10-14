@@ -10,4 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - initial version
-- supports `shellcheck` with `rebar.config` option `files` (or CLI `--files`)
+- supports rebar3-based execution of `shellcheck` with `rebar.config` options + CLI `--files`
+- works on macOS
+- works on Linux
+- doesn't work on Microsoft Windows
