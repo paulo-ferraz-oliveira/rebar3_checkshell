@@ -22,7 +22,13 @@ init(State) ->
     {ok, rebar_state:add_provider(State, Provider)}.
 
 do(State) ->
-    {ok, State}.
+    Files = get_arg(files, State),
+    case Files of
+        undefined ->
+            {error, "checkshell: missing --files"};
+        _ ->
+            rebar3_checkshell_arch:do(Files, State)
+    end.
 
 format_error(Reason) ->
     io_lib:format("~p", [Reason]).
@@ -33,3 +39,7 @@ opts() ->
 version() ->
     {ok, Version} = file:read_file(rebar3_checkshell_utils:priv_dir() ++ "/VERSION"),
     binary_to_list(Version).
+
+get_arg(Arg, State) ->
+    {Args, _} = rebar_state:command_parsed_args(State),
+    proplists:get_value(Arg, Args).
