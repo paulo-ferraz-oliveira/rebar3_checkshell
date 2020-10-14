@@ -86,7 +86,16 @@ rebar3 checkshell --files=scripts/*.sh
 Check it out
 ------------
 
-TODO: add example output
+```bash
+===> Compiling rebar3_checkshell
+In script.sh line 2:
+VAR=none
+^-- SC2034: VAR appears unused. Verify use (or export if used externally).
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2034 -- A appears unused. Verify use (or ...
+===> checkshell: ShellCheck exited with error
+```
 
 Ignoring issues
 ---------------
