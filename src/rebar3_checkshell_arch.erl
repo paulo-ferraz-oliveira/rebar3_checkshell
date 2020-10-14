@@ -4,7 +4,6 @@
 -export([do/3]).
 
 -define(SUCCESS, 0).
--define(FAILURE, 1).
 
 do(Files, State) ->
     do(get_archs(), Files, State).
@@ -23,8 +22,8 @@ do({false = _IsMacOS, false = _IsLinux, true = _IsWindows}, _Files, _State) ->
 
 result({?SUCCESS, _AnalysisRes}, State) ->
     {ok, State};
-result({?FAILURE, AnalysisRes}, _State) ->
-    output_shellcheck_analysis(AnalysisRes),
+result({Failure, AnalysisRes}, _State) ->
+    output_shellcheck_analysis(Failure, AnalysisRes),
     {error, "checkshell: ShellCheck exited with error"}.
 
 get_archs() ->
@@ -131,5 +130,7 @@ port_loop(Port, Data) ->
             {ExitStatus, Data}
     end.
 
-output_shellcheck_analysis(AnalysisRes) ->
-    io:format("~s", [string:sub_string(AnalysisRes, 2)]).
+output_shellcheck_analysis(1 = _Failure, AnalysisRes) ->
+    io:format("~s", [string:sub_string(AnalysisRes, 2)]);
+output_shellcheck_analysis(_Failure, AnalysisRes) ->
+    io:format("~s", [AnalysisRes]).
