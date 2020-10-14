@@ -24,7 +24,7 @@ init(State) ->
     {ok, rebar_state:add_provider(State, Provider)}.
 
 -spec do(State) -> Result
-      when Result :: {error, string()} | {ok, State}.
+      when Result :: {error, rebar3_checkshell_utils:str()} | {ok, State}.
 do(State) ->
     Files = get_arg(files, State),
     case Files of
@@ -41,7 +41,7 @@ format_error(Reason) ->
     io_lib:format("~p", [Reason]).
 
 -spec version() -> Result
-      when Result :: string().
+      when Result :: rebar3_checkshell_utils:str().
 version() ->
     {ok, Version} = file:read_file(rebar3_checkshell_utils:priv_dir() ++ "/VERSION"),
     binary_to_list(Version).
@@ -49,7 +49,7 @@ version() ->
 -spec get_arg(Arg, State) -> Result
       when Arg :: files,
            State :: term(),
-           Result :: string().
+           Result :: undefined | string().
 get_arg(Arg, State) ->
     {Args, _} = rebar_state:command_parsed_args(State),
     proplists:get_value(Arg, Args).
