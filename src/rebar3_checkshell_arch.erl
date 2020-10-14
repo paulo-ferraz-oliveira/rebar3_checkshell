@@ -5,9 +5,16 @@
 
 -define(SUCCESS, 0).
 
+-spec do(Files, State) -> Result
+      when Files :: string(),
+           Result :: {ok, State} | {error, string()}.
 do(Files, State) ->
     do(get_archs(), Files, State).
 
+-spec do(Archs, Files, State) -> Result
+      when Archs :: {IsMacOS :: boolean(), IsLinux :: boolean(), IsWindows :: boolean()},
+           Files :: string(),
+           Result :: {ok, State} | {error, string()}.
 do({true = _IsMacOS, false = _IsLinux, false = _IsWindows}, Files, State) ->
     do_unix_like("darwin", Files, State);
 do({false = _IsMacOS, true = _IsLinux, false = _IsWindows}, Files, State) ->
@@ -15,18 +22,28 @@ do({false = _IsMacOS, true = _IsLinux, false = _IsWindows}, Files, State) ->
 do({false = _IsMacOS, false = _IsLinux, true = _IsWindows}, _Files, _State) ->
     {error, "checkshell: no support for Windows yet"}.
 
+-spec do_unix_like(Arch, Files, State) -> Result
+      when Arch :: string(),
+           Files :: string(),
+           Result :: {ok, State} | {error, string()}.
 do_unix_like(Arch, Files, State) ->
     Exec = rebar3_checkshell_utils:priv_dir() ++ "/" ++ Arch ++ ".x86_64/shellcheck",
     OpenPortCmd = {spawn, Exec ++ args(Files, State)},
     OpenPortOpts = [exit_status],
     result(port_loop(erlang:open_port(OpenPortCmd, OpenPortOpts), ""), State).
 
+-spec result({ExitCode, Analysis}, State) -> Result
+      when ExitCode :: non_neg_integer(),
+           Analysis :: string(),
+           Result :: {ok, State} | {error, string()}.
 result({?SUCCESS, _AnalysisRes}, State) ->
     {ok, State};
 result({Failure, AnalysisRes}, _State) ->
     output_shellcheck_analysis(Failure, AnalysisRes),
     {error, "checkshell: ShellCheck exited with error"}.
 
+-spec get_archs() -> Result
+      when Result :: {IsMacOS :: boolean(), IsLinux :: boolean(), IsWindows :: boolean()}.
 get_archs() ->
     Arch = rebar_utils:get_arch(),
     IsMacOS = re:run(Arch, "darwin") =/= nomatch,
@@ -34,6 +51,10 @@ get_archs() ->
     IsWindows = re:run(Arch, "win32") =/= nomatch,
     {IsMacOS, IsLinux, IsWindows}.
 
+-spec args(Files, State) -> Result
+      when Files :: string(),
+           State :: term(),
+           Result :: string().
 args(Files, State) ->
     OptsFromRebarConfig = rebar_state:get(State, checkshell, []),
     OptsForShellCheck
@@ -47,11 +68,17 @@ args(Files, State) ->
     MaybeColor = proplists:get_value(color, OptsFromRebarConfig, undefined),
     OptsForShellCheck ++ maybe_colorize(MaybeColor) ++ opt({files, Files}).
 
+-spec maybe_colorize(Color) -> Result
+      when Color :: undefined | auto | always | never,
+           Result :: string().
 maybe_colorize(undefined) ->
     " --color=always";
 maybe_colorize(_) ->
     "".
 
+-spec opt(Option) -> Result
+      when Option :: atom() | {atom(), atom() | list() | string() | integer()},
+           Result :: string().
 opt(check_sourced) ->
     " --check-sourced";
 opt({color, Color}) when Color =:= auto orelse Color =:= always orelse Color =:= never ->
@@ -123,6 +150,10 @@ opt(UnknownOption) ->
     rebar_api:warn("checkshell: unknown rebar.config option ~p", [UnknownOption]),
     "".
 
+-spec port_loop(Port, Data) -> Result
+      when Port :: port(),
+           Data :: string(),
+           Result :: {ExitStatus :: non_neg_integer(), Data}.
 port_loop(Port, Data) ->
     receive
         {Port, {data, MoreData}} ->
@@ -131,6 +162,10 @@ port_loop(Port, Data) ->
             {ExitStatus, Data}
     end.
 
+-spec output_shellcheck_analysis(Failure, AnalysisRes) -> Result
+      when Failure :: pos_integer(),
+           AnalysisRes :: string(),
+           Result :: ok.
 output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
     io:format("~s", [string:sub_string(AnalysisRes, 2)]);
 output_shellcheck_analysis(_Failure, AnalysisRes) ->
