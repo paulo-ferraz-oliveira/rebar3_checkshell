@@ -34,6 +34,9 @@ do(State) ->
         undefined ->
             {error, "checkshell: missing --files"};
         _ ->
+            _ = rebar_log:log(
+                info, "rebar3_checkshell analysis starting, this may take a while...", []
+            ),
             rebar3_checkshell_arch:do(Files, State)
     end.
 
