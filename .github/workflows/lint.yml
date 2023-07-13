@@ -35,3 +35,9 @@ jobs:
             .*.yml
           strict: true
           config_file: .yamllint.yml
+
+      - name: checkshell # Eat our own dog food
+        run: |
+          rebar3 escriptize
+          _build/default/bin/rebar3_checkshell --files priv/update.sh
+

@@ -5,32 +5,17 @@ ShellCheck is a static analysis tool for shell scripts.
 It's licensed under the GNU General Public License v3.0.
 Information and source code is available on the website.
 
-This binary was compiled on Sun Apr  5 02:01:47 UTC 2020.
+This binary was compiled on Tue Dec 13 06:39:54 UTC 2022.
 
 
 
       ====== Latest commits ======
 
-commit f7547c9a5ad0cec60f7b765881051bf4a56d8a80
-Author: Vidar Holen <spam@vidarholen.net>
-Date:   Sat Apr 4 17:14:02 2020 -0700
+commit a526ee08290cc127bc1aa5a05e9b927af87b6ef3
+Author: Vidar Holen <vidar@vidarholen.net>
+Date:   Mon Dec 12 19:58:11 2022 -0800
 
-    Stable version v0.7.1
+    Stable version 0.9.0
     
-    This release is dedicated to the board game Pandemic, for teaching us
-    relevant survival skills like how to stay inside and play board games.
-
-commit bd717c9d1be89a3eecd832b73342d2b1afb4dac9
-Author: Vidar Holen <spam@vidarholen.net>
-Date:   Wed Apr 1 22:09:00 2020 -0700
-
-    Don't warn about [ 0 -ne $FOO ] || [ 0 -ne $BAR ] (fixes #1891)
-
-commit da0931740f2b26690737296a884ea9ac59173b56
-Merge: 555f8a8 7a5e261
-Author: Vidar Holen <spam@vidarholen.net>
-Date:   Wed Apr 1 18:52:53 2020 -0700
-
-    Merge pull request #1876 from fork-graveyard/master
-    
-    recognize `: ${parameter=word}` as assignment
+    This release is dedicated to Mindustry: the most fun you can
+    have with open source (outside of shell scripting of course).
