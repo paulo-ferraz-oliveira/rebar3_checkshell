@@ -32,8 +32,8 @@ update_for_arch() {
   rm -f "$compressed"
   if [ -d shellcheck-"$vsn" ]; then
     mv shellcheck-"$vsn"/* .
+    rm -rf shellcheck-"$vsn"
   fi
-  rm -rf shellcheck-"$vsn"
   popd > /dev/null || true
   local size
   size=$(du -sh "$arch" | awk '{print $1}')
