@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        runs-on: [ubuntu-22.04, windows-2022] # macos, for now, is best-effort
+        runs-on: [ubuntu-22.04, windows-2022]  # macos, for now, is best-effort
         otp-version: [24, 25, 26]
         rebar3-version: [3.22]
 
