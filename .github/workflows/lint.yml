@@ -11,7 +11,7 @@ name: Lint
       - main
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
     steps:

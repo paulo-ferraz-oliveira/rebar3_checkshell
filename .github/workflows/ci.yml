@@ -11,7 +11,7 @@ name: Erlang CI
       - main
 
 jobs:
-  build:
+  ci:
     name: Erlang CI
 
     strategy:
