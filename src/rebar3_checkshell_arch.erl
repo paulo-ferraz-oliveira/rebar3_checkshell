@@ -191,6 +191,6 @@ port_loop(Port, Data) ->
     AnalysisRes :: rebar3_checkshell_utils:str(),
     Result :: ok.
 output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
-    io:format("~s", [string:sub_string(AnalysisRes, 2)]);
+    rebar_api:warn("~s", [string:sub_string(AnalysisRes, 2)]);
 output_shellcheck_analysis(_Failure, AnalysisRes) ->
-    io:format("~s", [AnalysisRes]).
+    rebar_api:warn("~s", [AnalysisRes]).
