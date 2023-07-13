@@ -13,12 +13,13 @@ update_for_arch() {
   mkdir "$arch"
   pushd "$arch" > /dev/null || true
 
-  local remote=https://github.com/koalaman/shellcheck/releases/download/$vsn/$compressed
+  local remote
+  remote=https://github.com/koalaman/shellcheck/releases/download/"$vsn"/"$compressed"
   echo "  * downloading $remote"
   wget --quiet "$remote"
 
   echo "  * expanding archive"
-  case $file_type in
+  case "$file_type" in
     "tar.xz")
       tar zxf "$compressed"
     ;;
@@ -29,8 +30,10 @@ update_for_arch() {
 
   echo "  * removing build artifacts"
   rm -f "$compressed"
-  [ -d "shellcheck-$vsn" ] && mv "shellcheck-$vsn/*" .
-  rm -rf "shellcheck-$vsn"
+  if [ -d shellcheck-"$vsn" ]; then
+    mv shellcheck-"$vsn"/* .
+  fi
+  rm -rf shellcheck-"$vsn"
   popd > /dev/null || true
   local size
   size=$(du -sh "$arch" | awk '{print $1}')
