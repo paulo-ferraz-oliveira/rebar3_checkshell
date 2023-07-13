@@ -1,1 +1,55 @@
+---
+name: Erlang CI
 
+"on":
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Erlang CI
+
+    strategy:
+      matrix:
+        runs-on: [ubuntu-22.04, windows-2022]
+        otp-version: [24, 25, 26]
+        rebar3-version: [3.22]
+
+    runs-on: ${{matrix.runs-on}}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: erlef/setup-beam@v1
+        id: setup-beam
+        with:
+          otp-version: ${{matrix.otp-version}}
+          rebar3-version: ${{matrix.rebar3-version}}
+
+      - name: Restore _build
+        uses: actions/cache@v3
+        with:
+          path: _build
+          key: "_build-cache-for\
+                -os-${{runner.os}}\
+                -otp-${{steps.setup-beam.outputs.otp-version}}\
+                -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
+                -hash-${{hashFiles('rebar.lock')}}"
+
+      - name: Restore rebar3's cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/rebar3
+          key: "rebar3-cache-for\
+                -os-${{runner.os}}\
+                -otp-${{steps.setup-beam.outputs.otp-version}}\
+                -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
+                -hash-${{hashFiles('rebar.lock')}}"
+
+      - name: Continuous Integration
+        run: rebar3 ci

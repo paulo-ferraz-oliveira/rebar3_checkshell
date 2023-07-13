@@ -1,3 +1,6 @@
+<!-- markdownlint-disable MD041  # first-line-heading/first-line-h1 -->
+<!-- markdownlint-disable MD029  # ol-prefix -->
+<!-- markdownlint-disable MD038  # no-space-in-code -->
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

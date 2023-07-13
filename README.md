@@ -1,23 +1,22 @@
-rebar3_checkshell
-=================
+# rebar3_checkshell [![Erlang CI][ci-img]][ci]
 
-[![hexpm](https://img.shields.io/hexpm/v/rebar3_checkshell.svg?style=flat)](https://hex.pm/packages/rebar3_checkshell)
-[![travisci](https://travis-ci.org/paulo-ferraz-oliveira/rebar3_checkshell.png?branch=master)](https://travis-ci.org/paulo-ferraz-oliveira/rebar3_checkshell)
+[ci]: https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/actions
+[ci-img]: https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/actions/workflows/erlang.yml/badge.svg
 
 `rebar3_checkshell` is a `rebar3` plugin that performs
 [ShellCheck](https://github.com/koalaman/shellcheck) static analysis on your scripts, while not
 having to install `shellcheck` locally.
 
-Purpose
--------
+## The plugin
+
+### Purpose
 
 The need for this plugin grew out of wanting to have a team of developers perform static analysis
 on their `bash`/`sh` scripts without having to install and keep updating versions of `shellcheck`.
-As an added bonus, a CI/CD system like Jenkins can also benefit from this: no need to install
+As an added bonus, a CI/CD system like GitHub can also benefit from this: no need to install
 `shellcheck` or keep it updated.
 
-Usage
------
+### Usage
 
 Add a `project_plugins` element to your `rebar.config`:
 
@@ -25,11 +24,10 @@ Add a `project_plugins` element to your `rebar.config`:
 {project_plugins, [rebar3_checkshell]}.
 ```
 
-Configuration
--------------
+### Configuration
 
 In your `rebar.config`, add section `checkshell` and within it the options described below.
-There are nocompulsory options (all defaults are those assumed by `shellcheck`).
+There are no compulsory options (all defaults are those assumed by `shellcheck`).
 
 ```erlang
 {checkshell, [
@@ -74,19 +72,17 @@ There are nocompulsory options (all defaults are those assumed by `shellcheck`).
 ]}.
 ```
 
-Command line options
---------------------
+### Command line options
 
 The only accepted (and compulsory) command option is `--files`, used as
 
-```bash
+```console
 rebar3 checkshell --files=scripts/*.sh
 ```
 
-Check it out
-------------
+### Check it out
 
-```bash
+```console
 ===> Compiling rebar3_checkshell
 In script.sh line 2:
 VAR=none
@@ -97,23 +93,22 @@ For more information:
 ===> checkshell: ShellCheck exited with error
 ```
 
-Ignoring issues
----------------
+### Ignoring issues
 
 (as per [ShellCheck](https://github.com/koalaman/shellcheck#ignoring-issues)'s GitHub `README.md`)
 > Issues can be ignored via environmental variable, command line, individually or globally within
 > a file:
-> https://github.com/koalaman/shellcheck/wiki/Ignore
+> <https://github.com/koalaman/shellcheck/wiki/Ignore>
 
-Checks
-------
+## ShellCheck
+
+### Checks
 
 You'll find a complete list of checks under
 [ShellCheck - Checks](https://github.com/koalaman/shellcheck/wiki/Checks). This is the canonical
 Wiki; it is not maintained by this plugin's maintainers.
 
-Restrictions
-------------
+### Restrictions
 
 Since we're bundling the binary elements for ShellCheck analysis (and they are obtained from
 pre-compiled sources, online, for a given "latest" version), it is possible that the analysis
@@ -121,8 +116,17 @@ won't executed out-of-the-box and exit with an uncontrolled error. If fixing tha
 important to you, [open an issue](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/issues)
 so we can find a solution.
 
-Contributing
-------------
+## The project
+
+### Changelog
+
+A complete changelog can be found under [CHANGELOG.md](CHANGELOG.md).
+
+### Code of Conduct
+
+This project's code of conduct is made explicit in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+### Contributing
 
 First of all, thank you for contributing with your time and patience.
 
@@ -137,10 +141,12 @@ might have already been answered before.
 Contributions will be subject to GNU General Public License 3.0.
 You will retain the copyright.
 
-Copyright
----------
+For more information check out [CONTRIBUTING.md](CONTRIBUTING.md).
 
-`rebar3 checkshell` is licensed under GNU General Public License 3.0. A copy of this license is
-included in file [LICENSE](LICENSE).
+## License
 
-Copyright 2020, [Paulo F. Oliveira](https://github.com/paulo-ferraz-oliveira) and contributors.
+License information can be found inside [LICENSE.md](LICENSE.md).
+
+## Security
+
+This project's security policy is made explicit in [SECURITY.md](SECURITY.md).

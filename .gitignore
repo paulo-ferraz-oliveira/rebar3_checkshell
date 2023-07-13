@@ -1,5 +1,4 @@
-.rebar3
 _build
+doc/
 erl_crash.dump
-log
 rebar3.crashdump
