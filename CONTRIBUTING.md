@@ -11,7 +11,7 @@
 
 ## License
 
-`rebar3_checkshell` is licensed under the [GNU General Public License 3.0](LICENSE.md), for all
+`rebar3_checkshell` is licensed under the [GNU General Public License 3.0](LICENSE), for all
 code.
 
 ## Reporting a bug

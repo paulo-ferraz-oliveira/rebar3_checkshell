@@ -150,7 +150,7 @@ For more information check out [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-License information can be found inside [LICENSE.md](LICENSE.md).
+License information can be found inside [LICENSE](LICENSE).
 
 ## Security
 
