@@ -1,3 +1,50 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:be91df270734225d10a801f8f4b42a13d20549e949bb90cf570db1b24fd7911e
-size 1061
+#!/usr/bin/env bash
+set -eu
+
+vsn=$(cat VERSION)
+
+update_for_arch() {
+  local arch=$1
+  local file_type=$2
+  local compressed=$3
+
+  echo "Going for $arch:"
+  rm -rf "$arch"
+  mkdir "$arch"
+  pushd "$arch" > /dev/null || true
+
+  local remote=https://github.com/koalaman/shellcheck/releases/download/$vsn/$compressed
+  echo "  * downloading $remote"
+  wget --quiet "$remote"
+
+  echo "  * expanding archive"
+  case $file_type in
+    "tar.xz")
+      tar zxf "$compressed"
+    ;;
+    "zip")
+      unzip -qq "$compressed"
+    ;;
+  esac
+
+  echo "  * removing build artifacts"
+  rm -f "$compressed"
+  [ -d "shellcheck-$vsn" ] && mv "shellcheck-$vsn/*" .
+  rm -rf "shellcheck-$vsn"
+  popd > /dev/null || true
+  local size
+  size=$(du -sh "$arch" | awk '{print $1}')
+  echo "  * size: $size"
+  echo "... done for $arch!"
+}
+
+# Linux, x86_64
+update_for_arch "linux.x86_64" "tar.xz" "shellcheck-$vsn.linux.x86_64.tar.xz"
+echo
+
+# macOS, x86_64
+update_for_arch "darwin.x86_64" "tar.xz" "shellcheck-$vsn.darwin.x86_64.tar.xz"
+echo
+
+# Windows, x86
+update_for_arch "windows.x86" "zip" "shellcheck-$vsn.zip"
