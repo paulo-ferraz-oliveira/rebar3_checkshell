@@ -11,26 +11,38 @@ do(Files, State) ->
     do(get_archs(), Files, State).
 
 -spec do(Archs, Files, State) -> Result when
-    Archs :: {IsMacOS :: boolean(), IsLinux :: boolean(), IsWindows :: boolean()},
+    Archs ::
+        {IsMacOS :: true, IsLinux :: false, IsWindows :: false}
+        | {IsMacOS :: false, IsLinux :: true, IsWindows :: false}
+        | {IsMacOS :: false, IsLinux :: false, IsWindows :: true},
     Files :: string(),
     Result :: {ok, State} | {error, rebar3_checkshell_utils:str()}.
 do({true = _IsMacOS, false = _IsLinux, false = _IsWindows}, Files, State) ->
-    do_unix_like(darwin, Files, State);
+    execute(darwin, Files, State);
 do({false = _IsMacOS, true = _IsLinux, false = _IsWindows}, Files, State) ->
-    do_unix_like(linux, Files, State);
-do({false = _IsMacOS, false = _IsLinux, true = _IsWindows}, _Files, _State) ->
-    {error, "checkshell: no support for Windows yet"}.
+    execute(linux, Files, State);
+do({false = _IsMacOS, false = _IsLinux, true = _IsWindows}, Files, State) ->
+    execute(windows, Files, State).
 
--spec do_unix_like(Arch, Files, State) -> Result when
-    Arch :: darwin | linux,
+-spec execute(Arch, Files, State) -> Result when
+    Arch :: darwin | linux | windows,
     Files :: string(),
     Result :: {ok, State} | {error, rebar3_checkshell_utils:str()}.
-do_unix_like(Arch, Files, State) ->
-    Exec =
-        rebar3_checkshell_utils:priv_dir() ++ "/" ++ atom_to_list(Arch) ++ ".x86_64/shellcheck",
+execute(Arch, Files, State) ->
+    ArchDir = filename:join(rebar3_checkshell_utils:priv_dir(), atom_to_list(Arch) ++ ".x86_64"),
+    Ext = extension_for(Arch),
+    Exec = filename:join(ArchDir, "shellcheck" ++ Ext),
     OpenPortCmd = {spawn, Exec ++ args(Files, State)},
     OpenPortOpts = [exit_status],
     result(port_loop(erlang:open_port(OpenPortCmd, OpenPortOpts), ""), State).
+
+-spec extension_for(Arch) -> Ext when
+    Arch :: darwin | linux | windows,
+    Ext :: rebar3_checkshell_utils:str().
+extension_for(windows) ->
+    ".exe";
+extension_for(_Other) ->
+    "".
 
 -spec result({ExitCode, Analysis}, State) -> Result when
     ExitCode :: non_neg_integer(),

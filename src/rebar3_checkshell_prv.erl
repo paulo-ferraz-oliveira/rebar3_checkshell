@@ -30,15 +30,18 @@ init(State) ->
     Result :: {error, rebar3_checkshell_utils:str()} | {ok, State}.
 do(State) ->
     Files = get_arg(files, State),
-    case Files of
-        undefined ->
-            {error, "checkshell: missing --files"};
-        _ ->
-            _ = rebar_log:log(
-                info, "rebar3_checkshell analysis starting, this may take a while...", []
-            ),
-            rebar3_checkshell_arch:do(Files, State)
-    end.
+    do_for(Files, State).
+
+-spec do_for(Files, State) -> Result when
+    Files :: undefined | string(),
+    Result :: {ok, State} | {error, rebar3_checkshell_utils:str()}.
+do_for(undefined = _Files, _State) ->
+    {error, "checkshell: missing --files"};
+do_for(Files, State) ->
+    _ = rebar_log:log(
+        info, "rebar3_checkshell analysis starting, this may take a while...", []
+    ),
+    rebar3_checkshell_arch:do(Files, State).
 
 -spec format_error(Reason) -> Result when
     Reason :: term(),
@@ -49,7 +52,8 @@ format_error(Reason) ->
 -spec version() -> Result when
     Result :: rebar3_checkshell_utils:str().
 version() ->
-    {ok, Version} = file:read_file(rebar3_checkshell_utils:priv_dir() ++ "/VERSION"),
+    VersionFile = filename:join(rebar3_checkshell_utils:priv_dir(), "VERSION"),
+    {ok, Version} = file:read_file(VersionFile),
     binary_to_list(Version).
 
 -spec get_arg(Arg, State) -> Result when
