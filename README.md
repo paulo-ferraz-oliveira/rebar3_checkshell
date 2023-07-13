@@ -116,6 +116,11 @@ won't executed out-of-the-box and exit with an uncontrolled error. If fixing tha
 important to you, [open an issue](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/issues)
 so we can find a solution.
 
+**Note**: to verify that the downloaded files haven't been tampered with, go to `priv`, study
+the content of `update.sh` and then run it when you're ready. You'll see that we download the
+files to specific folder but don't touch them otherwise. Also, doing this on a non-tampered version
+should yield no changes to the file under Git source control.
+
 ## The project
 
 ### Changelog
