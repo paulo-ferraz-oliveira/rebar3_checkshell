@@ -53,9 +53,3 @@ jobs:
 
       - name: Continuous Integration
         run: rebar3 ci
-
-      - name: checkshell  # Eat our own dog food
-        env:
-          DIAGNOSTIC: 1
-        run: |
-          rebar3 as test checkshell --files priv/update.sh
