@@ -114,6 +114,11 @@ Executables are downloaded and cached inside `~/.cache/rebar3/checkshell`, per v
 platform. As long as the version doesn't change or you don't delete the sources, they are only
 downloaded once and subsequently reused.
 
+**Note**: to verify that the downloaded files haven't been tampered with, we implemen a basic
+MD5-based checksum (using `crypto`) against the files we're about to execute. If the checksums
+don't coincide, the execution is aborted. You can override this by setting option
+`{checkshell, [{checksum, false}]}.` in `rebar.config`.
+
 ## The project
 
 ### Changelog

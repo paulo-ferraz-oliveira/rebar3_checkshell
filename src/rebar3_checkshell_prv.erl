@@ -1,5 +1,7 @@
 -module(rebar3_checkshell_prv).
 
+-include("rebar3_checkshell.hrl").
+
 -export([init/1]).
 -ignore_xref([init/1]).
 
@@ -10,6 +12,8 @@
 -ignore_xref([format_error/1]).
 
 -define(PROVIDER, checkshell).
+
+-export_type([nonempty_ubytes/0]).
 
 -spec init(State) -> Result when
     Result :: {ok, State}.
@@ -28,14 +32,14 @@ init(State) ->
     {ok, rebar_state:add_provider(State, Provider)}.
 
 -spec do(State) -> Result when
-    Result :: {ok, State} | {error, nonempty_string()}.
+    Result :: {ok, State} | {error, nonempty_ubytes()}.
 do(State) ->
     Files = get_arg(files, State),
     do_for(Files, State).
 
 -spec do_for(Files, State) -> Result when
     Files :: undefined | string(),
-    Result :: {ok, State} | {error, nonempty_string()}.
+    Result :: {ok, State} | {error, nonempty_ubytes()}.
 do_for(undefined = _Files, _State) ->
     {error, "checkshell: missing --files"};
 do_for(Files, State) ->

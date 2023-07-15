@@ -10,9 +10,11 @@
 -type t() :: darwin | linux | win32.
 -export_type([t/0]).
 
+-export_type([nonempty_ubytes/0]).
+
 -spec do(Files, State) -> Result when
     Files :: string(),
-    Result :: {ok, State} | {error, nonempty_string()}.
+    Result :: {ok, State} | {error, nonempty_ubytes()}.
 do(Files, State) ->
     InstallRes = rebar3_checkshell_inst:put_executables(),
     do(InstallRes, Files, State).

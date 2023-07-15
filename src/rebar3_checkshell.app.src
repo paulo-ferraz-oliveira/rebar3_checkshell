@@ -3,6 +3,7 @@
     {vsn, semver},
     {applications, [
         % OTP dependencies
+        crypto,
         kernel,
         stdlib,
         sasl,

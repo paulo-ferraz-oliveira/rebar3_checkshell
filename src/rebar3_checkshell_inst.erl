@@ -6,9 +6,21 @@
 -export([shellcheck_path/0]).
 
 -define(SHELLCHECK_VERSION, "v0.9.0").
+-elvis([{elvis_style, operator_spaces, disable}]).
+-define(DARWIN_CHECKSUM,
+    <<253, 31, 54, 249, 47, 253, 173, 108, 34, 206, 20, 25, 167, 196, 78, 129>>
+).
+-define(LINUX_CHECKSUM,
+    <<35, 100, 38, 131, 239, 213, 185, 125, 148, 117, 168, 245, 248, 158, 25, 107>>
+).
+-define(WIN32_CHECKSUM,
+    <<167, 119, 58, 62, 90, 217, 211, 132, 219, 212, 190, 41, 13, 219, 120, 241>>
+).
+
+-export_type([nonempty_ubytes/0]).
 
 -spec put_executables() -> Result when
-    Result :: ok | {error, string()}.
+    Result :: ok | {error, nonempty_ubytes()}.
 put_executables() ->
     ArchCacheDirExists = filelib:is_dir(arch_cache_dir()),
     CacheDirResult = mkdir_arch_cache(ArchCacheDirExists),
@@ -20,7 +32,10 @@ put_executables() ->
     DownloadAndWriteResult = download_and_write(CompressedTargetExists, VsnDirResult),
 
     ExpandedExists = filelib:is_file(shellcheck_path()),
-    expand(ExpandedExists, DownloadAndWriteResult).
+    ExpandResult = expand(ExpandedExists, DownloadAndWriteResult),
+
+    CheckSummed = application:get_env(checkshell, checksum, true),
+    checksum(CheckSummed, ExpandResult).
 
 -spec compressed_target() -> Result when
     Result :: string().
@@ -149,22 +164,51 @@ download_and_write(false = _CompressedTargetExists, ok = _VsnDirResult) ->
     CompressedTarget = compressed_target(),
     ok = file:write_file(CompressedTarget, HttpBodyResult).
 
+-spec checksum(CheckSummed, ExpandResult) -> Result when
+    CheckSummed :: boolean(),
+    ExpandResult :: ok | {error, file:posix()},
+    Result :: ok | {error, nonempty_ubytes()}.
+checksum(false = _CheckSummed, _ExpandResult) ->
+    rebar_api:warn("checkshell: checksum bypass is ON"),
+    ok;
+checksum(true = _CheckSummed, {error, FilePosix} = ExpandResult) ->
+    _ = rebar_log:log(debug, "checkshell: (expand for) prior error ~p", [ExpandResult]),
+    {error, "(check with DEBUG=1) " ++ atom_to_list(FilePosix)};
+checksum(true = _CheckSummed, ok = _ExpandResult) ->
+    {ok, ShellCheck} = file:read_file(shellcheck_path()),
+    do_checksum(rebar3_checkshell_arch:t(), crypto:hash(md5, ShellCheck)).
+
+-spec do_checksum(Arch, Checksum) -> Result when
+    Arch :: rebar3_checkshell_arch:t(),
+    Checksum :: binary(),
+    Result :: ok | {error, nonempty_ubytes()}.
+do_checksum(Arch, Checksum) when
+    (Arch =:= darwin andalso Checksum =:= ?DARWIN_CHECKSUM) orelse
+        (Arch =:= linux andalso Checksum =:= ?LINUX_CHECKSUM) orelse
+        (Arch =:= win32 andalso Checksum =:= ?WIN32_CHECKSUM)
+->
+    _ = rebar_log:log(debug, "checkshell: checksum is Ok for arch. ~p", [Arch]),
+    ok;
+do_checksum(_Arch, _Expected) ->
+    {error, "invalid executable checksum"}.
+
 -spec expand(ExpandedExists, DownloadAndWriteResult) -> Result when
     ExpandedExists :: boolean(),
     DownloadAndWriteResult :: ok | {error, file:posix()},
-    Result :: ok | {error, string()}.
+    Result :: ok | {error, file:posix()}.
 expand(ExpandedExists, DownloadAndWriteResult) ->
     expand_for(ExpandedExists, DownloadAndWriteResult).
 
 -spec expand_for(ExpandedExists, DownloadAndWriteResult) -> Result when
     ExpandedExists :: boolean(),
     DownloadAndWriteResult :: ok | {error, file:posix()},
-    Result :: ok | {error, string()}.
+    Result :: ok | {error, file:posix()}.
 expand_for(true = _ExpandedExists, _DownloadAndWriteResult) ->
     _ = rebar_log:log(debug, "checkshell: expanded target exists", []),
     ok;
-expand_for(false = _ExpandedExists, {error, Result} = _DownloadAndWriteResult) ->
-    {error, atom_to_list(Result)};
+expand_for(false = _ExpandedExists, {error, _Result} = DownloadAndWriteResult) ->
+    _ = rebar_log:log(debug, "checkshell: (expand for) prior error ~p", [DownloadAndWriteResult]),
+    DownloadAndWriteResult;
 expand_for(false = _ExpandedExists, ok = _DownloadAndWriteResult) ->
     FileType = file_type(),
     CompressedTarget = compressed_target(),
