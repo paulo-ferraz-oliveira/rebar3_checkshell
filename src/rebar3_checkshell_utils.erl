@@ -1,12 +1,26 @@
 -module(rebar3_checkshell_utils).
 
--export([priv_dir/0]).
+-export([cmd/2]).
 
--type str() :: [1..255, ...].
+-spec cmd(Cmd, Args) -> Result when
+    Cmd :: string(),
+    Args :: [string()],
+    Result :: {ExitStatus :: non_neg_integer(), Data :: string()}.
+cmd(Cmd, Args0) ->
+    Args = [" " ++ Arg || Arg <- Args0],
+    PortName = {spawn, Cmd ++ Args},
+    PortSettings = [exit_status],
+    Port = open_port(PortName, PortSettings),
+    port_loop(Port, "").
 
--export_type([str/0]).
-
--spec priv_dir() -> Result when
-    Result :: file:filename().
-priv_dir() ->
-    code:priv_dir(rebar3_checkshell).
+-spec port_loop(Port, Data) -> Result when
+    Port :: port(),
+    Data :: string(),
+    Result :: {ExitStatus :: non_neg_integer(), Data}.
+port_loop(Port, Data) ->
+    receive
+        {Port, {data, MoreData}} ->
+            port_loop(Port, Data ++ MoreData);
+        {Port, {exit_status, ExitStatus}} ->
+            {ExitStatus, Data}
+    end.

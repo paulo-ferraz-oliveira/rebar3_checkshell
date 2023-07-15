@@ -1,91 +1,84 @@
 -module(rebar3_checkshell_arch).
 
+-include("rebar3_checkshell.hrl").
+
 -export([do/2]).
+-export([t/0]).
 
 -define(SUCCESS, 0).
 
+-type t() :: darwin | linux | win32.
+-export_type([t/0]).
+
 -spec do(Files, State) -> Result when
     Files :: string(),
-    Result :: {ok, State} | {error, rebar3_checkshell_utils:str()}.
+    Result :: {ok, State} | {error, nonempty_string()}.
 do(Files, State) ->
-    do(get_archs(), Files, State).
+    InstallRes = rebar3_checkshell_inst:put_executables(),
+    do(InstallRes, Files, State).
 
--spec do(Archs, Files, State) -> Result when
-    Archs ::
-        {IsMacOS :: true, IsLinux :: false, IsWindows :: false}
-        | {IsMacOS :: false, IsLinux :: true, IsWindows :: false}
-        | {IsMacOS :: false, IsLinux :: false, IsWindows :: true},
+-spec do(InstallRes, Files, State) -> Result when
+    InstallRes :: ok | {error, string()},
     Files :: string(),
-    Result :: {ok, State} | {error, rebar3_checkshell_utils:str()}.
-do({true = _IsMacOS, false = _IsLinux, false = _IsWindows}, Files, State) ->
-    execute(darwin, Files, State);
-do({false = _IsMacOS, true = _IsLinux, false = _IsWindows}, Files, State) ->
-    execute(linux, Files, State);
-do({false = _IsMacOS, false = _IsLinux, true = _IsWindows}, _Files, _State) ->
-    {error, "checkshell: no support for Windows yet"}.
-
--spec execute(Arch, Files, State) -> Result when
-    Arch :: darwin | linux,
-    Files :: string(),
-    Result :: {ok, State} | {error, rebar3_checkshell_utils:str()}.
-execute(Arch, Files, State) ->
-    ArchDir = filename:join(rebar3_checkshell_utils:priv_dir(), atom_to_list(Arch) ++ ".x86_64"),
-    Exec = filename:join(ArchDir, "shellcheck"),
-    OpenPortCmd = {spawn, Exec ++ args(Files, State)},
-    OpenPortOpts = [exit_status],
-    result(port_loop(erlang:open_port(OpenPortCmd, OpenPortOpts), ""), State).
+    Result :: {ok, State} | {error, string()}.
+do({error, E} = _InstallRes, _File, _State) ->
+    {error, "checkshell: installation returned " ++ E};
+do(ok = _InstallRes, Files, State) ->
+    Cmd = rebar3_checkshell_inst:shellcheck_path(),
+    Args = args(Files, State),
+    result(rebar3_checkshell_utils:cmd(Cmd, Args), State).
 
 -spec result({ExitCode, Analysis}, State) -> Result when
     ExitCode :: non_neg_integer(),
     Analysis :: string(),
-    Result :: {ok, State} | {error, rebar3_checkshell_utils:str()}.
+    Result :: {ok, State} | {error, nonempty_ubytes()}.
 result({?SUCCESS, _AnalysisRes}, State) ->
     {ok, State};
 result({Failure, AnalysisRes}, _State) ->
     output_shellcheck_analysis(Failure, AnalysisRes),
     {error, "checkshell: ShellCheck exited with error"}.
 
--spec get_archs() -> Result when
-    Result :: {IsMacOS :: boolean(), IsLinux :: boolean(), IsWindows :: boolean()}.
-get_archs() ->
-    Arch = rebar_utils:get_arch(),
-    IsMacOS = re:run(Arch, "darwin") =/= nomatch,
-    IsLinux = re:run(Arch, "linux") =/= nomatch,
-    IsWindows = re:run(Arch, "win32") =/= nomatch,
-    {IsMacOS, IsLinux, IsWindows}.
+-spec t() -> Result when
+    Result :: t().
+t() ->
+    Subject = rebar_utils:get_arch(),
+    RE = ".*(?P<A>darwin|linux|win32).*",
+    Options = [{capture, ['A'], list}],
+    {match, [Arch]} = re:run(Subject, RE, Options),
+    list_to_existing_atom(Arch).
 
 -spec args(Files, State) -> Result when
     Files :: string(),
     State :: term(),
-    Result :: rebar3_checkshell_utils:str().
+    Result :: [string()].
 args(Files, State) ->
     OptsFromRebarConfig = rebar_state:get(State, checkshell, []),
     OptsForShellCheck =
         lists:foldl(
-            fun(OptFromRebarConfig, Acc) -> Acc ++ opt(OptFromRebarConfig) end,
-            "",
+            fun(OptFromRebarConfig, Acc) -> Acc ++ [opt(OptFromRebarConfig)] end,
+            [""],
             OptsFromRebarConfig
         ),
     MaybeColor = proplists:get_value(color, OptsFromRebarConfig, undefined),
-    OptsForShellCheck ++ maybe_colorize(MaybeColor) ++ opt({files, Files}).
+    OptsForShellCheck ++ [maybe_colorize(MaybeColor)] ++ [opt({files, Files})].
 
 -spec maybe_colorize(Color) -> Result when
     Color :: undefined | auto | always | never,
     Result :: string().
-maybe_colorize(undefined) ->
-    " --color=always";
-maybe_colorize(_) ->
+maybe_colorize(undefined = _Color) ->
+    "--color=always";
+maybe_colorize(_Color) ->
     "".
 
 -spec opt(Option) -> Result when
     Option :: atom() | {atom(), atom() | list() | string() | integer()},
-    Result :: rebar3_checkshell_utils:str().
+    Result :: string().
 opt(check_sourced) ->
-    " --check-sourced";
+    "--check-sourced";
 opt({color, Color}) when Color =:= auto orelse Color =:= always orelse Color =:= never ->
-    " --color=" ++ atom_to_list(Color);
+    "--color=" ++ atom_to_list(Color);
 opt({include, Includes}) ->
-    " --include=" ++
+    "--include=" ++
         lists:foldl(
             fun
                 (Include, "" = _Acc) when is_list(Include) ->
@@ -103,7 +96,7 @@ opt({include, Includes}) ->
             Includes
         );
 opt({exclude, Excludes}) ->
-    " --exclude=" ++
+    "--exclude=" ++
         lists:foldl(
             fun
                 (Exclude, "" = _Acc) when is_list(Exclude) ->
@@ -129,13 +122,13 @@ opt({format, Format}) when
         Format =:= quiet orelse
         Format =:= tty
 ->
-    " --format=" ++ atom_to_list(Format);
+    "--format=" ++ atom_to_list(Format);
 opt(list_optional) ->
-    " --list-optional";
+    "--list-optional";
 opt(norc) ->
-    " --norc";
+    "--norc";
 opt({enable, Checks}) when is_list(Checks) ->
-    " --enable=" ++
+    "--enable=" ++
         lists:foldl(
             fun
                 (Check, "" = _Acc) when is_list(Check) ->
@@ -153,45 +146,33 @@ opt({enable, Checks}) when is_list(Checks) ->
             Checks
         );
 opt({enable, all}) ->
-    " --enable=all";
+    "--enable=all";
 opt({source_paths, SourcePaths}) when is_list(SourcePaths) ->
-    " --source-path=" ++ SourcePaths;
+    "--source-path=" ++ SourcePaths;
 opt({shell, Shell}) when
     Shell =:= sh orelse Shell =:= bash orelse Shell =:= dash orelse Shell =:= ksh
 ->
-    " --shell=" ++ atom_to_list(Shell);
+    "--shell=" ++ atom_to_list(Shell);
 opt({severity, Severity}) when
     Severity =:= error orelse
         Severity =:= warning orelse
         Severity =:= info orelse
         Severity =:= style
 ->
-    " --severity=" ++ atom_to_list(Severity);
+    "--severity=" ++ atom_to_list(Severity);
 opt({wiki_link_count, Num}) when is_integer(Num) andalso Num > 0 ->
-    " --wiki-link-count=" ++ integer_to_list(Num);
+    "--wiki-link-count=" ++ integer_to_list(Num);
 opt(external_sources) ->
-    " --external-sources";
+    "--external-sources";
 opt({files, Files}) when is_list(Files) ->
-    " " ++ Files;
+    "" ++ Files;
 opt(UnknownOption) ->
     rebar_api:warn("checkshell: unknown rebar.config option ~p", [UnknownOption]),
     "".
 
--spec port_loop(Port, Data) -> Result when
-    Port :: port(),
-    Data :: string(),
-    Result :: {ExitStatus :: non_neg_integer(), Data}.
-port_loop(Port, Data) ->
-    receive
-        {Port, {data, MoreData}} ->
-            port_loop(Port, Data ++ MoreData);
-        {Port, {exit_status, ExitStatus}} ->
-            {ExitStatus, Data}
-    end.
-
 -spec output_shellcheck_analysis(Failure, AnalysisRes) -> Result when
     Failure :: pos_integer(),
-    AnalysisRes :: rebar3_checkshell_utils:str(),
+    AnalysisRes :: string(),
     Result :: ok.
 output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
     rebar_api:warn("~s", [string:sub_string(AnalysisRes, 2)]);
