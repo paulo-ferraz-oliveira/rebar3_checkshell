@@ -169,7 +169,7 @@ download_and_write(false = _CompressedTargetExists, ok = _VsnDirResult) ->
     ExpandResult :: ok | {error, file:posix()},
     Result :: ok | {error, nonempty_ubytes()}.
 checksum(false = _CheckSummed, _ExpandResult) ->
-    rebar_api:warn("checkshell: checksum bypass is ON"),
+    _ = rebar_log:log(warn, "checkshell: checksum bypass is ON", []),
     ok;
 checksum(true = _CheckSummed, {error, FilePosix} = ExpandResult) ->
     _ = rebar_log:log(debug, "checkshell: (expand for) prior error ~p", [ExpandResult]),

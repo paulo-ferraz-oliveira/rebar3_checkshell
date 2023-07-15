@@ -43,7 +43,7 @@ result({Failure, AnalysisRes}, _State) ->
 -spec t() -> Result when
     Result :: t().
 t() ->
-    Subject = rebar_utils:get_arch(),
+    Subject = erlang:system_info(system_architecture),
     RE = ".*(?P<A>darwin|linux|win32).*",
     Options = [{capture, ['A'], list}],
     {match, [Arch]} = re:run(Subject, RE, Options),
@@ -88,7 +88,8 @@ opt({include, Includes}) ->
                 (Include, Acc) when is_list(Include) ->
                     Acc ++ "," ++ Include;
                 (Include, Acc) ->
-                    rebar_api:warn(
+                    _ = rebar_log:log(
+                        warn,
                         "checkshell: non-string value for option include: ~p",
                         [Include]
                     ),
@@ -106,7 +107,8 @@ opt({exclude, Excludes}) ->
                 (Exclude, Acc) when is_list(Exclude) ->
                     Acc ++ "," ++ Exclude;
                 (Exclude, Acc) ->
-                    rebar_api:warn(
+                    _ = rebar_log:log(
+                        warn,
                         "checkshell: non-string value for option exclude: ~p",
                         [Exclude]
                     ),
@@ -138,7 +140,8 @@ opt({enable, Checks}) when is_list(Checks) ->
                 (Check, Acc) when is_list(Check) ->
                     Acc ++ "," ++ Check;
                 (Check, Acc) ->
-                    rebar_api:warn(
+                    _ = rebar_log:log(
+                        warn,
                         "checkshell: non-string value for option enable: ~p",
                         [Check]
                     ),
@@ -169,7 +172,11 @@ opt(external_sources) ->
 opt({files, Files}) when is_list(Files) ->
     "" ++ Files;
 opt(UnknownOption) ->
-    rebar_api:warn("checkshell: unknown rebar.config option ~p", [UnknownOption]),
+    _ = rebar_log:log(
+        warn,
+        "checkshell: unknown rebar.config option ~p",
+        [UnknownOption]
+    ),
     "".
 
 -spec output_shellcheck_analysis(Failure, AnalysisRes) -> Result when
@@ -177,6 +184,6 @@ opt(UnknownOption) ->
     AnalysisRes :: string(),
     Result :: ok.
 output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
-    rebar_api:warn("~s", [string:sub_string(AnalysisRes, 2)]);
+    _ = rebar_log:log(warn, "~p", [string:sub_string(AnalysisRes, 2)]);
 output_shellcheck_analysis(_Failure, AnalysisRes) ->
-    rebar_api:warn("~s", [AnalysisRes]).
+    _ = rebar_log:log(warn, "~p", [AnalysisRes]).
