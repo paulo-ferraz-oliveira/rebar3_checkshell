@@ -108,18 +108,11 @@ You'll find a complete list of checks under
 [ShellCheck - Checks](https://github.com/koalaman/shellcheck/wiki/Checks). This is the canonical
 Wiki; it is not maintained by this plugin's maintainers.
 
-### Restrictions
+### Downloading and caching executables
 
-Since we're bundling the binary elements for ShellCheck analysis (and they are obtained from
-pre-compiled sources, online, for a given "latest" version), it is possible that the analysis
-won't executed out-of-the-box and exit with an uncontrolled error. If fixing that issue is really
-important to you, [open an issue](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/issues)
-so we can find a solution.
-
-**Note**: to verify that the downloaded files haven't been tampered with, go to `priv`, study
-the content of `update.sh` and then run it when you're ready. You'll see that we download the
-files to specific folder but don't touch them otherwise. Also, doing this on a non-tampered version
-should yield no changes to the file under Git source control.
+Executables are downloaded and cached inside `~/.cache/rebar3/checkshell`, per version and
+platform. As long as the version doesn't change or you don't delete the sources, they are only
+downloaded once and subsequently reused.
 
 ## The project
 
