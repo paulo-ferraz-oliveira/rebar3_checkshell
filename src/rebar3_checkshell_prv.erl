@@ -8,6 +8,9 @@
 -export([do/1]).
 -ignore_xref([do/1]).
 
+-export([do_for/2]).
+-ignore_xref([do_for/2]).
+
 -export([format_error/1]).
 -ignore_xref([format_error/1]).
 
