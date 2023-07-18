@@ -146,10 +146,10 @@ You will retain the copyright.
 
 For more information check out [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## License
+### License
 
 License information can be found inside [LICENSE](LICENSE).
 
-## Security
+### Security
 
 This project's security policy is made explicit in [SECURITY.md](SECURITY.md).
