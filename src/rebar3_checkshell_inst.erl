@@ -223,7 +223,7 @@ expand_for(false = _ExpandedExists, ok = _DownloadAndWriteResult) ->
     Result :: ok.
 do_expand_for(tar_xz, CompressedTarget, TargetDir) ->
     Cmd = "tar",
-    Args = ["zxf", CompressedTarget, "--strip-components", "1", "--cd", TargetDir],
+    Args = ["zxf", CompressedTarget, "--strip-components", "1", "--directory", TargetDir],
     {0, _Data} = rebar3_checkshell_utils:cmd(Cmd, Args),
     ok;
 do_expand_for(zip, CompressedTarget, TargetDir) ->
