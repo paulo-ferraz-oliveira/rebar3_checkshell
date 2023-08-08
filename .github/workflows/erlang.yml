@@ -8,6 +8,7 @@ jobs:
     name: Erlang CI
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os-base: ubuntu
