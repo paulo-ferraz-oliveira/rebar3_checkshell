@@ -49,7 +49,9 @@ jobs:
           rebar3-version: ${{matrix.rebar3-version}}
         if: ${{matrix.os-base != 'macos'}}
 
-      - run: brew install erlang@${{matrix.otp-version}}
+      - run: |
+          brew install erlang@${{matrix.otp-version}}
+          brew install rebar3
         if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
