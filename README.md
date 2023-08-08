@@ -123,11 +123,11 @@ don't coincide, the execution is aborted. You can override this by setting optio
 
 ### Changelog
 
-A complete changelog can be found under [CHANGELOG.md](CHANGELOG.md).
+A complete changelog can be found under [CHANGELOG.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/CHANGELOG.md).
 
 ### Code of Conduct
 
-This project's code of conduct is made explicit in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+This project's code of conduct is made explicit in [CODE_OF_CONDUCT.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/CODE_OF_CONDUCT.md).
 
 ### Contributing
 
@@ -144,12 +144,12 @@ might have already been answered before.
 Contributions will be subject to GNU General Public License 3.0.
 You will retain the copyright.
 
-For more information check out [CONTRIBUTING.md](CONTRIBUTING.md).
+For more information check out [CONTRIBUTING.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/CONTRIBUTING.md).
 
 ### License
 
-License information can be found inside [LICENSE](LICENSE).
+License information can be found inside [LICENSE](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/LICENSE).
 
 ### Security
 
-This project's security policy is made explicit in [SECURITY.md](SECURITY.md).
+This project's security policy is made explicit in [SECURITY.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/SECURITY.md).
