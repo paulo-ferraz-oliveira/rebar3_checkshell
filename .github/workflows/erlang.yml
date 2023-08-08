@@ -47,10 +47,10 @@ jobs:
         with:
           otp-version: ${{matrix.otp-version}}
           rebar3-version: ${{matrix.rebar3-version}}
-        if: ${{matrix.os-base}} != macos
+        if: ${{matrix.os-base != 'macos'}}
 
       - run: brew install erlang@${{matrix.otp-version}}
-        if: ${{matrix.os-base}} == macos
+        if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
         uses: actions/cache@v3
@@ -61,7 +61,7 @@ jobs:
                 -otp-${{steps.setup-beam.outputs.otp-version}}\
                 -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
                 -hash-${{hashFiles('rebar.lock')}}"
-        if: ${{matrix.os-base}} != macos
+        if: ${{matrix.os-base != 'macos'}}
 
       - name: Restore rebar3's cache
         uses: actions/cache@v3
@@ -72,11 +72,11 @@ jobs:
                 -otp-${{steps.setup-beam.outputs.otp-version}}\
                 -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
                 -hash-${{hashFiles('rebar.lock')}}"
-        if: ${{matrix.os-base}} != macos
+        if: ${{matrix.os-base != 'macos'}}
 
       - name: Check file format
         run: rebar3 fmt --check
-        if: ${{matrix.os-base}} != windows
+        if: ${{matrix.os-base != 'windows'}}
 
       - name: Continuous Integration
         run: rebar3 as test ci
