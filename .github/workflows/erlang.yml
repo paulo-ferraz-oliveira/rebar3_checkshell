@@ -44,5 +44,8 @@ jobs:
                 -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
                 -hash-${{hashFiles('rebar.lock')}}"
 
+      - name: Check file format
+        run: rebar3 fmt --check
+
       - name: Continuous Integration
         run: rebar3 ci
