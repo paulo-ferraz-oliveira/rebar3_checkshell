@@ -13,7 +13,7 @@
 -export_type([nonempty_ubytes/0]).
 
 -spec do(Files, State) -> Result when
-    Files :: string(),
+    Files :: [string()],
     Result :: {ok, State} | {error, nonempty_ubytes()}.
 do(Files, State) ->
     InstallRes = rebar3_checkshell_inst:put_executables(),
@@ -21,7 +21,7 @@ do(Files, State) ->
 
 -spec do(InstallRes, Files, State) -> Result when
     InstallRes :: ok | {error, string()},
-    Files :: string(),
+    Files :: [string()],
     Result :: {ok, State} | {error, string()}.
 do({error, E} = _InstallRes, _File, _State) ->
     {error, "checkshell: installation returned " ++ E};
@@ -50,7 +50,7 @@ t() ->
     list_to_existing_atom(Arch).
 
 -spec args(Files, State) -> Result when
-    Files :: string(),
+    Files :: [string()],
     State :: term(),
     Result :: [string()].
 args(Files, State) ->

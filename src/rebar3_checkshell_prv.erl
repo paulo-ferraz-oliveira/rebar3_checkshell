@@ -41,7 +41,7 @@ do(State) ->
     do_for(Files, State).
 
 -spec do_for(Files, State) -> Result when
-    Files :: undefined | string(),
+    Files :: undefined | [string()],
     Result :: {ok, State} | {error, nonempty_ubytes()}.
 do_for(undefined = _Files, _State) ->
     {error, "checkshell: missing --files"};

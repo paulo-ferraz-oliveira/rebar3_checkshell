@@ -48,4 +48,4 @@ jobs:
         run: rebar3 fmt --check
 
       - name: Continuous Integration
-        run: rebar3 ci
+        run: rebar3 as test ci
