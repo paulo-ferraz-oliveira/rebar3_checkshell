@@ -31,6 +31,9 @@ There are no compulsory options (all defaults are those assumed by `shellcheck`)
 
 ```erlang
 {checkshell, [
+    % Source files to consider for analysis
+    {files, ["FILE1", "FILE2"]},
+
     % Include warnings from sourced files
     check_sourced,
 
@@ -74,11 +77,14 @@ There are no compulsory options (all defaults are those assumed by `shellcheck`)
 
 ### Command line options
 
-The only accepted (and compulsory) command option is `--files`, used as
+The only accepted command option is `--files`, used as
 
 ```console
 rebar3 checkshell --files=scripts/*.sh
 ```
+
+Since `files` can also come from `rebar.config`, the plugin makes an effort to merge both lists
+and apply the analysis on top of that.
 
 ### Check it out
 
@@ -114,7 +120,7 @@ Executables are downloaded and cached inside `~/.cache/rebar3/checkshell`, per v
 platform. As long as the version doesn't change or you don't delete the sources, they are only
 downloaded once and subsequently reused.
 
-**Note**: to verify that the downloaded files haven't been tampered with, we implemen a basic
+**Note**: to verify that the downloaded files haven't been tampered with, we implement a basic
 MD5-based checksum (using `crypto`) against the files we're about to execute. If the checksums
 don't coincide, the execution is aborted. You can override this by setting option
 `{checkshell, [{checksum, false}]}.` in `rebar.config`.
