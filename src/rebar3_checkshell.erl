@@ -17,5 +17,5 @@ init(State) ->
     Files :: [string()],
     Result :: ok.
 main(Files) ->
-    rebar3_checkshell_prv:do_for(Files, rebar_state:new()),
+    _ = rebar3_checkshell_prv:do_for(Files, rebar_state:new()),
     ok.
