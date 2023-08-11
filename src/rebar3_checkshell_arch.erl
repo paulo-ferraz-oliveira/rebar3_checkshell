@@ -17,7 +17,7 @@
     Files :: [string()],
     Result :: {ok, State} | {error, nonempty_ubytes()}.
 do(Files, State) ->
-    InstallRes = rebar3_checkshell_inst:put_executables(),
+    InstallRes = rebar3_checkshell_inst:put_executables(State),
     do(InstallRes, Files, State).
 
 -spec do(InstallRes, Files, State) -> Result when
@@ -55,14 +55,20 @@ t() ->
     State :: term(),
     Result :: [string()].
 args(Files, State) ->
-    OptsFromRebarConfig = rebar_state:get(State, checkshell, []),
+    OptsFromRebarConfig = rebar3_checkshell_prv:opts(State),
     OptsForShellCheck =
         lists:foldl(
-            fun(OptFromRebarConfig, Acc) -> Acc ++ [opt(OptFromRebarConfig)] end,
+            fun
+                ({files, _Files}, Acc) ->
+                    % handled separately
+                    Acc;
+                (OptFromRebarConfig, Acc) ->
+                    Acc ++ [opt(OptFromRebarConfig)]
+            end,
             [""],
             OptsFromRebarConfig
         ),
-    MaybeColor = proplists:get_value(color, OptsFromRebarConfig, undefined),
+    MaybeColor = rebar3_checkshell_prv:opt(State, color, undefined),
     OptsForShellCheck ++ [maybe_colorize(MaybeColor)] ++ [opt({files, Files})].
 
 -spec maybe_colorize(Color) -> Result when

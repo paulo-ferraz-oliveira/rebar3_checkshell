@@ -31,6 +31,9 @@ There are no compulsory options (all defaults are those assumed by `shellcheck`)
 
 ```erlang
 {checkshell, [
+    % Source files to consider for analysis
+    {files, ["FILE1", "FILE2"]},
+
     % Include warnings from sourced files
     check_sourced,
 
@@ -74,11 +77,14 @@ There are no compulsory options (all defaults are those assumed by `shellcheck`)
 
 ### Command line options
 
-The only accepted (and compulsory) command option is `--files`, used as
+The only accepted command option is `--files`, used as
 
 ```console
 rebar3 checkshell --files=scripts/*.sh
 ```
+
+Since `files` can also come from `rebar.config` the plugin makes an effort to merge both lists
+and apply the analysis on top of that.
 
 ### Check it out
 

@@ -3,7 +3,7 @@
 
 -include("rebar3_checkshell.hrl").
 
--export([put_executables/0]).
+-export([put_executables/1]).
 -export([shellcheck_path/0]).
 
 -define(SHELLCHECK_VERSION, "v0.9.0").
@@ -20,9 +20,10 @@
 
 -export_type([nonempty_ubytes/0]).
 
--spec put_executables() -> Result when
+-spec put_executables(State) -> Result when
+    State :: rebar_state:t(),
     Result :: ok | {error, nonempty_ubytes()}.
-put_executables() ->
+put_executables(State) ->
     ArchCacheDirExists = filelib:is_dir(arch_cache_dir()),
     CacheDirResult = mkdir_arch_cache(ArchCacheDirExists),
 
@@ -35,7 +36,7 @@ put_executables() ->
     ExpandedExists = filelib:is_file(shellcheck_path()),
     ExpandResult = expand(ExpandedExists, DownloadAndWriteResult),
 
-    CheckSummed = application:get_env(checkshell, checksum, true),
+    CheckSummed = rebar3_checkshell_prv:opt(State, checksum, true),
     checksum(CheckSummed, ExpandResult).
 
 -spec compressed_target() -> Result when
