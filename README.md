@@ -83,7 +83,7 @@ The only accepted command option is `--files`, used as
 rebar3 checkshell --files=scripts/*.sh
 ```
 
-Since `files` can also come from `rebar.config` the plugin makes an effort to merge both lists
+Since `files` can also come from `rebar.config`, the plugin makes an effort to merge both lists
 and apply the analysis on top of that.
 
 ### Check it out
