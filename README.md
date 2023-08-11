@@ -125,6 +125,17 @@ MD5-based checksum (using `crypto`) against the files we're about to execute. If
 don't coincide, the execution is aborted. You can override this by setting option
 `{checkshell, [{checksum, false}]}.` in `rebar.config`.
 
+#### Choosing a ShellCheck version
+
+The plugin ships with its own rules for downloading, caching and checksumming a specific ShellCheck
+**version**. You can override this by setting option `{checkshell, [{vsn, "v0.9.0"}]}.` in
+`rebar.config`, in which case the plugin will warn you that the check is turned off.
+
+**Note**: using a ShellCheck version different from the one the plugin targets by default may
+introduce unexpected error (also, new versions might bring e.g. new options that won't be available
+for consumption out-of-the-box). In this case, feel free to pull request, or open a GitHub issue
+to discuss moving forward.
+
 ## The project
 
 ### Changelog

@@ -27,7 +27,7 @@ do(Files, State) ->
 do({error, E} = _InstallRes, _File, _State) ->
     {error, "checkshell: installation returned " ++ E};
 do(ok = _InstallRes, Files, State) ->
-    Cmd = rebar3_checkshell_inst:shellcheck_path(),
+    Cmd = rebar3_checkshell_inst:shellcheck_path(State),
     Args = args(Files, State),
     result(rebar3_checkshell_utils:cmd(Cmd, Args), State).
 
