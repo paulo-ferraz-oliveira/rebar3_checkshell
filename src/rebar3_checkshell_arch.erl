@@ -81,7 +81,7 @@ maybe_colorize(_Color) ->
 
 -spec opt(Option) -> Result when
     Option :: atom() | {atom(), atom() | list() | string() | integer()},
-    Result :: string().
+    Result :: string() | list().
 opt(check_sourced) ->
     "--check-sourced";
 opt({color, Color}) when Color =:= auto orelse Color =:= always orelse Color =:= never ->
