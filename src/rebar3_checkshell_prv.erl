@@ -1,3 +1,4 @@
+% @private
 -module(rebar3_checkshell_prv).
 
 -include("rebar3_checkshell.hrl").

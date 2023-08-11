@@ -1,3 +1,4 @@
+% @private
 -module(rebar3_checkshell_utils).
 
 -export([cmd/2]).

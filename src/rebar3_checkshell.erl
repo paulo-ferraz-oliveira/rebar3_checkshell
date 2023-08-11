@@ -1,3 +1,4 @@
+% @private
 -module(rebar3_checkshell).
 
 -export([init/1]).
