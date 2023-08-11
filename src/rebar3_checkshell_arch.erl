@@ -69,7 +69,7 @@ args(Files, State) ->
             OptsFromRebarConfig
         ),
     MaybeColor = rebar3_checkshell_prv:opt(State, color, undefined),
-    OptsForShellCheck ++ [maybe_colorize(MaybeColor)] ++ [opt({files, Files})].
+    OptsForShellCheck ++ [maybe_colorize(MaybeColor)] ++ opt({files, Files}).
 
 -spec maybe_colorize(Color) -> Result when
     Color :: undefined | auto | always | never,
@@ -177,7 +177,7 @@ opt({wiki_link_count, Num}) when is_integer(Num) andalso Num > 0 ->
 opt(external_sources) ->
     "--external-sources";
 opt({files, Files}) when is_list(Files) ->
-    "" ++ Files;
+    Files;
 opt(UnknownOption) ->
     _ = rebar_log:log(
         warn,
