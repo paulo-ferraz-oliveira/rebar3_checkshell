@@ -8,7 +8,7 @@
     Args :: [string()],
     Result :: {ExitStatus :: non_neg_integer(), Data :: string()}.
 cmd(Cmd, Args0) ->
-    Args = [" " ++ Arg || Arg <- Args0],
+    Args = [" " ++ Arg || Arg <- Args0, Arg =/= ""],
     PortName = {spawn, Cmd ++ Args},
     PortSettings = [exit_status],
     Port = open_port(PortName, PortSettings),

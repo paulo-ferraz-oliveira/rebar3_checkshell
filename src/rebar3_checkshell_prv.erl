@@ -101,12 +101,13 @@ opt(State, Opt, Default) ->
     Result :: [{Abs :: string(), Opt :: string()}].
 files_from_cli(State) ->
     {Args, _} = rebar_state:command_parsed_args(State),
-    OptFiles = proplists:get_value(files, Args, []),
+    OptFiles0 = proplists:get_value(files, Args, []),
+    OptFiles = string:split(OptFiles0, ",", all),
     [{filename:absname(OptFile), OptFile} || OptFile <- OptFiles].
 
 -spec files_from_rebar_config(State) -> Result when
     State :: term(),
     Result :: [{Abs :: string(), Opt :: string()}].
 files_from_rebar_config(State) ->
-    OptFiles = opt(State, files),
+    OptFiles = opt(State, files, []),
     [{filename:absname(OptFile), OptFile} || OptFile <- OptFiles].

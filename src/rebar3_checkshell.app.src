@@ -4,9 +4,10 @@
     {applications, [
         % OTP dependencies
         crypto,
+        inets,
         kernel,
-        stdlib,
         sasl,
+        stdlib,
         % External dependencies
         tls_certificate_check
     ]},

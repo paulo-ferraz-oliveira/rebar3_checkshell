@@ -4,7 +4,7 @@
 -include("rebar3_checkshell.hrl").
 
 -export([put_executables/1]).
--export([shellcheck_path/0]).
+-export([shellcheck_path/1]).
 
 -define(SHELLCHECK_VERSION, "v0.9.0").
 -elvis([{elvis_style, operator_spaces, disable}]).
@@ -27,22 +27,22 @@ put_executables(State) ->
     ArchCacheDirExists = filelib:is_dir(arch_cache_dir()),
     CacheDirResult = mkdir_arch_cache(ArchCacheDirExists),
 
-    VsnCacheDirExists = filelib:is_dir(vsn_cache_dir()),
-    VsnDirResult = mkdir_vsn_cache(VsnCacheDirExists, CacheDirResult),
+    VsnCacheDirExists = filelib:is_dir(vsn_cache_dir(State)),
+    VsnDirResult = mkdir_vsn_cache(VsnCacheDirExists, CacheDirResult, State),
 
-    CompressedTargetExists = filelib:is_file(compressed_target()),
-    DownloadAndWriteResult = download_and_write(CompressedTargetExists, VsnDirResult),
+    CompressedTargetExists = filelib:is_file(compressed_target(State)),
+    DownloadAndWriteResult = download_and_write(CompressedTargetExists, VsnDirResult, State),
 
-    ExpandedExists = filelib:is_file(shellcheck_path()),
-    ExpandResult = expand(ExpandedExists, DownloadAndWriteResult),
+    ExpandedExists = filelib:is_file(shellcheck_path(State)),
+    ExpandResult = expand(ExpandedExists, DownloadAndWriteResult, State),
+    CheckSummed = rebar3_checkshell_prv:opt(State, checksum, should_checksum(State)),
+    checksum(CheckSummed, ExpandResult, State).
 
-    CheckSummed = rebar3_checkshell_prv:opt(State, checksum, true),
-    checksum(CheckSummed, ExpandResult).
-
--spec compressed_target() -> Result when
+-spec compressed_target(State) -> Result when
+    State :: rebar_state:t(),
     Result :: string().
-compressed_target() ->
-    filename:join(vsn_cache_dir(), installer_name()).
+compressed_target(State) ->
+    filename:join(vsn_cache_dir(State), installer_name(State)).
 
 % supertype
 -dialyzer({nowarn_function, arch_folder_name/0}).
@@ -78,15 +78,26 @@ global_cache_dir() ->
 arch_cache_dir() ->
     filename:join(global_cache_dir(), checkshell_arch_folder_name()).
 
--spec vsn_cache_dir() -> Result when
+-spec vsn_cache_dir(State) -> Result when
+    State :: rebar_state:t(),
     Result :: string().
-vsn_cache_dir() ->
-    filename:join(arch_cache_dir(), ?SHELLCHECK_VERSION).
+vsn_cache_dir(State) ->
+    {_IsDefaultVsn, Vsn} = vsn(State),
+    filename:join(arch_cache_dir(), Vsn).
 
--spec shellcheck_path() -> Result when
+-spec vsn(State) -> Result when
+    State :: rebar_state:t(),
+    Result :: {IsDefaultVsn :: boolean(), Vsn :: string()}.
+vsn(State) ->
+    DefaultVsn = ?SHELLCHECK_VERSION,
+    Vsn = rebar3_checkshell_prv:opt(State, vsn, DefaultVsn),
+    {Vsn =:= DefaultVsn, Vsn}.
+
+-spec shellcheck_path(State) -> Result when
+    State :: rebar_state:t(),
     Result :: string().
-shellcheck_path() ->
-    filename:join(vsn_cache_dir(), executable()).
+shellcheck_path(State) ->
+    filename:join(vsn_cache_dir(State), executable()).
 
 % supertype
 -dialyzer({nowarn_function, executable/0}).
@@ -121,40 +132,44 @@ mkdir_arch_cache(false = _Exists) ->
     ]),
     filelib:ensure_path(ArchCacheDir).
 
--spec mkdir_vsn_cache(Exists, CacheDirResult) -> Result when
+-spec mkdir_vsn_cache(Exists, CacheDirResult, State) -> Result when
     Exists :: boolean(),
     CacheDirResult :: ok | {error, file:posix()},
+    State :: rebar_state:t(),
     Result :: ok | {error, file:posix()}.
-mkdir_vsn_cache(true = _Exists, _CacheDirResult) ->
+mkdir_vsn_cache(true = _Exists, _CacheDirResult, _State) ->
     _ = rebar_log:log(debug, "checkshell: vsn cache dir exists", []),
     ok;
-mkdir_vsn_cache(false = _Exists, {error, _FilePosix} = CacheDirResult) ->
+mkdir_vsn_cache(false = _Exists, {error, _FilePosix} = CacheDirResult, _State) ->
     _ = rebar_log:log(debug, "checkshell: (vsn cache) prior error ~p", [CacheDirResult]),
     CacheDirResult;
-mkdir_vsn_cache(false = _Exists, ok = _CacheDirResult) ->
-    VsnCacheDir = vsn_cache_dir(),
+mkdir_vsn_cache(false = _Exists, ok = _CacheDirResult, State) ->
+    VsnCacheDir = vsn_cache_dir(State),
     _ = rebar_log:log(info, "checkshell: creating cache/version dir at ~p", [VsnCacheDir]),
     filelib:ensure_path(VsnCacheDir).
 
--spec download_url() -> Result when
+-spec download_url(State) -> Result when
+    State :: rebar_state:t(),
     Result :: nonempty_ubytes().
-download_url() ->
-    "https://github.com/koalaman/shellcheck/releases/download/" ++ ?SHELLCHECK_VERSION ++ "/" ++
-        installer_name().
+download_url(State) ->
+    {_IsDefaultVsn, Vsn} = vsn(State),
+    "https://github.com/koalaman/shellcheck/releases/download/" ++ Vsn ++ "/" ++
+        installer_name(State).
 
--spec download_and_write(CompressedTargetExists, VsnDirResult) -> Result when
+-spec download_and_write(CompressedTargetExists, VsnDirResult, State) -> Result when
     CompressedTargetExists :: boolean(),
     VsnDirResult :: ok | {error, file:posix()},
+    State :: rebar_state:t(),
     Result :: ok | {error, file:posix()}.
-download_and_write(true = _CompressedTargetExists, _VsnDirResult) ->
+download_and_write(true = _CompressedTargetExists, _VsnDirResult, _State) ->
     _ = rebar_log:log(debug, "checkshell: compressed target exists", []),
     ok;
-download_and_write(false = _CompressedTargetExists, {error, _FilePosix} = VsnDirResult) ->
+download_and_write(false = _CompressedTargetExists, {error, _FilePosix} = VsnDirResult, _State) ->
     _ = rebar_log:log(debug, "checkshell: (download and write) prior error ~p", [VsnDirResult]),
     VsnDirResult;
-download_and_write(false = _CompressedTargetExists, ok = _VsnDirResult) ->
-    URL = download_url(),
-    VsnCacheDir = vsn_cache_dir(),
+download_and_write(false = _CompressedTargetExists, ok = _VsnDirResult, State) ->
+    URL = download_url(State),
+    VsnCacheDir = vsn_cache_dir(State),
     HttpHeaders = [],
     HttpOptions = [{ssl, tls_certificate_check:options(URL)}],
     Options = [{body_format, binary}],
@@ -163,21 +178,29 @@ download_and_write(false = _CompressedTargetExists, ok = _VsnDirResult) ->
         get, {URL, HttpHeaders}, HttpOptions, Options
     ),
 
-    CompressedTarget = compressed_target(),
+    CompressedTarget = compressed_target(State),
     ok = file:write_file(CompressedTarget, HttpBodyResult).
 
--spec checksum(CheckSummed, ExpandResult) -> Result when
+-spec should_checksum(State) -> Result when
+    State :: rebar_state:t(),
+    Result :: boolean().
+should_checksum(State) ->
+    {IsDefaultVsn, _Vsn} = vsn(State),
+    IsDefaultVsn.
+
+-spec checksum(CheckSummed, ExpandResult, State) -> Result when
     CheckSummed :: boolean(),
     ExpandResult :: ok | {error, file:posix()},
+    State :: rebar_state:t(),
     Result :: ok | {error, nonempty_ubytes()}.
-checksum(false = _CheckSummed, _ExpandResult) ->
+checksum(false = _CheckSummed, _ExpandResult, _State) ->
     _ = rebar_log:log(warn, "checkshell: checksum bypass is ON", []),
     ok;
-checksum(true = _CheckSummed, {error, FilePosix} = ExpandResult) ->
+checksum(true = _CheckSummed, {error, FilePosix} = ExpandResult, _State) ->
     _ = rebar_log:log(debug, "checkshell: (expand for) prior error ~p", [ExpandResult]),
     {error, "(check with DEBUG=1) " ++ atom_to_list(FilePosix)};
-checksum(true = _CheckSummed, ok = _ExpandResult) ->
-    {ok, ShellCheck} = file:read_file(shellcheck_path()),
+checksum(true = _CheckSummed, ok = _ExpandResult, State) ->
+    {ok, ShellCheck} = file:read_file(shellcheck_path(State)),
     do_checksum(rebar3_checkshell_arch:t(), crypto:hash(md5, ShellCheck)).
 
 -spec do_checksum(Arch, Checksum) -> Result when
@@ -194,27 +217,29 @@ do_checksum(Arch, Checksum) when
 do_checksum(_Arch, _Expected) ->
     {error, "invalid executable checksum"}.
 
--spec expand(ExpandedExists, DownloadAndWriteResult) -> Result when
+-spec expand(ExpandedExists, DownloadAndWriteResult, State) -> Result when
     ExpandedExists :: boolean(),
     DownloadAndWriteResult :: ok | {error, file:posix()},
+    State :: rebar_state:t(),
     Result :: ok | {error, file:posix()}.
-expand(ExpandedExists, DownloadAndWriteResult) ->
-    expand_for(ExpandedExists, DownloadAndWriteResult).
+expand(ExpandedExists, DownloadAndWriteResult, State) ->
+    expand_for(ExpandedExists, DownloadAndWriteResult, State).
 
--spec expand_for(ExpandedExists, DownloadAndWriteResult) -> Result when
+-spec expand_for(ExpandedExists, DownloadAndWriteResult, State) -> Result when
     ExpandedExists :: boolean(),
     DownloadAndWriteResult :: ok | {error, file:posix()},
+    State :: rebar_state:t(),
     Result :: ok | {error, file:posix()}.
-expand_for(true = _ExpandedExists, _DownloadAndWriteResult) ->
+expand_for(true = _ExpandedExists, _DownloadAndWriteResult, _State) ->
     _ = rebar_log:log(debug, "checkshell: expanded target exists", []),
     ok;
-expand_for(false = _ExpandedExists, {error, _Result} = DownloadAndWriteResult) ->
+expand_for(false = _ExpandedExists, {error, _Result} = DownloadAndWriteResult, _State) ->
     _ = rebar_log:log(debug, "checkshell: (expand for) prior error ~p", [DownloadAndWriteResult]),
     DownloadAndWriteResult;
-expand_for(false = _ExpandedExists, ok = _DownloadAndWriteResult) ->
+expand_for(false = _ExpandedExists, ok = _DownloadAndWriteResult, State) ->
     FileType = file_type(),
-    CompressedTarget = compressed_target(),
-    VsnCacheDir = vsn_cache_dir(),
+    CompressedTarget = compressed_target(State),
+    VsnCacheDir = vsn_cache_dir(State),
     _ = rebar_log:log(info, "checkshell: extracting executable to ~p", [VsnCacheDir]),
     do_expand_for(FileType, CompressedTarget, VsnCacheDir).
 
@@ -248,17 +273,22 @@ file_type_for(linux) ->
 file_type_for(win32) ->
     zip.
 
--spec installer_name() -> Result when
+-spec installer_name(State) -> Result when
+    State :: rebar_state:t(),
     Result :: nonempty_ubytes().
-installer_name() ->
-    installer_name_for(rebar3_checkshell_arch:t()).
+installer_name(State) ->
+    installer_name_for(rebar3_checkshell_arch:t(), State).
 
--spec installer_name_for(Arch) -> Result when
+-spec installer_name_for(Arch, State) -> Result when
+    State :: rebar_state:t(),
     Arch :: rebar3_checkshell_arch:t(),
     Result :: nonempty_ubytes().
-installer_name_for(darwin) ->
-    "shellcheck-" ++ ?SHELLCHECK_VERSION ++ ".darwin.x86_64.tar.xz";
-installer_name_for(linux) ->
-    "shellcheck-" ++ ?SHELLCHECK_VERSION ++ ".linux.x86_64.tar.xz";
-installer_name_for(win32) ->
-    "shellcheck-" ++ ?SHELLCHECK_VERSION ++ ".zip".
+installer_name_for(darwin, State) ->
+    {_IsDefaultVsn, Vsn} = vsn(State),
+    "shellcheck-" ++ Vsn ++ ".darwin.x86_64.tar.xz";
+installer_name_for(linux, State) ->
+    {_IsDefaultVsn, Vsn} = vsn(State),
+    "shellcheck-" ++ Vsn ++ ".linux.x86_64.tar.xz";
+installer_name_for(win32, State) ->
+    {_IsDefaultVsn, Vsn} = vsn(State),
+    "shellcheck-" ++ Vsn ++ ".zip".

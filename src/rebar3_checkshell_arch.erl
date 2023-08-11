@@ -27,7 +27,7 @@ do(Files, State) ->
 do({error, E} = _InstallRes, _File, _State) ->
     {error, "checkshell: installation returned " ++ E};
 do(ok = _InstallRes, Files, State) ->
-    Cmd = rebar3_checkshell_inst:shellcheck_path(),
+    Cmd = rebar3_checkshell_inst:shellcheck_path(State),
     Args = args(Files, State),
     result(rebar3_checkshell_utils:cmd(Cmd, Args), State).
 
@@ -69,7 +69,7 @@ args(Files, State) ->
             OptsFromRebarConfig
         ),
     MaybeColor = rebar3_checkshell_prv:opt(State, color, undefined),
-    OptsForShellCheck ++ [maybe_colorize(MaybeColor)] ++ [opt({files, Files})].
+    OptsForShellCheck ++ [maybe_colorize(MaybeColor)] ++ opt({files, Files}).
 
 -spec maybe_colorize(Color) -> Result when
     Color :: undefined | auto | always | never,
@@ -81,7 +81,7 @@ maybe_colorize(_Color) ->
 
 -spec opt(Option) -> Result when
     Option :: atom() | {atom(), atom() | list() | string() | integer()},
-    Result :: string().
+    Result :: string() | list().
 opt(check_sourced) ->
     "--check-sourced";
 opt({color, Color}) when Color =:= auto orelse Color =:= always orelse Color =:= never ->
@@ -177,7 +177,7 @@ opt({wiki_link_count, Num}) when is_integer(Num) andalso Num > 0 ->
 opt(external_sources) ->
     "--external-sources";
 opt({files, Files}) when is_list(Files) ->
-    "" ++ Files;
+    Files;
 opt(UnknownOption) ->
     _ = rebar_log:log(
         warn,

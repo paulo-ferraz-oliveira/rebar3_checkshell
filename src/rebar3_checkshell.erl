@@ -17,5 +17,6 @@ init(State) ->
     Files :: [string()],
     Result :: ok.
 main(Files) ->
+    {ok, _Started} = application:ensure_all_started(rebar3_checkshell),
     _ = rebar3_checkshell_prv:do_for(Files, rebar_state:new()),
     ok.
