@@ -25,7 +25,12 @@ end_per_suite(Config) ->
 %
 % Tests.
 
-test(Config) ->
+empty_ok(Config) ->
     DataDir = proplists:get_value(data_dir, Config),
     Empty = filename:join(DataDir, "empty.sh"),
     {ok, _} = rebar3_checkshell_prv:do_for([Empty], ?REBAR3_NEW_STATE).
+
+fish_nok(Config) ->
+    DataDir = proplists:get_value(data_dir, Config),
+    Fish = filename:join(DataDir, "fish.sh"),
+    {error, _} = rebar3_checkshell_prv:do_for([Fish], ?REBAR3_NEW_STATE).

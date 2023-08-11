@@ -95,7 +95,7 @@ opt({include, Includes}) ->
                 (Include, Acc) when is_list(Include) ->
                     Acc ++ "," ++ Include;
                 (Include, Acc) ->
-                    _ = rebar_log:log(
+                    _ = rebar3_checkshell_utils:log(
                         warn,
                         "checkshell: non-string value for option include: ~p",
                         [Include]
@@ -114,7 +114,7 @@ opt({exclude, Excludes}) ->
                 (Exclude, Acc) when is_list(Exclude) ->
                     Acc ++ "," ++ Exclude;
                 (Exclude, Acc) ->
-                    _ = rebar_log:log(
+                    _ = rebar3_checkshell_utils:log(
                         warn,
                         "checkshell: non-string value for option exclude: ~p",
                         [Exclude]
@@ -147,7 +147,7 @@ opt({enable, Checks}) when is_list(Checks) ->
                 (Check, Acc) when is_list(Check) ->
                     Acc ++ "," ++ Check;
                 (Check, Acc) ->
-                    _ = rebar_log:log(
+                    _ = rebar3_checkshell_utils:log(
                         warn,
                         "checkshell: non-string value for option enable: ~p",
                         [Check]
@@ -179,7 +179,7 @@ opt(external_sources) ->
 opt({files, Files}) when is_list(Files) ->
     Files;
 opt(UnknownOption) ->
-    _ = rebar_log:log(
+    _ = rebar3_checkshell_utils:log(
         warn,
         "checkshell: unknown rebar.config option ~p",
         [UnknownOption]
@@ -191,6 +191,6 @@ opt(UnknownOption) ->
     AnalysisRes :: string(),
     Result :: ok.
 output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
-    _ = rebar_log:log(warn, "~p", [string:sub_string(AnalysisRes, 2)]);
+    rebar3_checkshell_utils:log(warn, "~p", [string:sub_string(AnalysisRes, 2)]);
 output_shellcheck_analysis(_Failure, AnalysisRes) ->
-    _ = rebar_log:log(warn, "~p", [AnalysisRes]).
+    rebar3_checkshell_utils:log(warn, "~p", [AnalysisRes]).
