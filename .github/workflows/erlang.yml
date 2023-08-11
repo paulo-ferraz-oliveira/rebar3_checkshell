@@ -1,26 +1,43 @@
 ---
 name: Erlang CI
 
-"on":
-  push:
-    branches:
-      - main
-
-  pull_request:
-    branches:
-      - main
+"on": [push, pull_request]
 
 jobs:
   ci:
     name: Erlang CI
 
     strategy:
+      fail-fast: false
       matrix:
-        runs-on: [ubuntu-22.04]  # macos, for now, is best-effort
-        otp-version: [24, 25, 26]
-        rebar3-version: [3.22]
+        include:
+          - os-base: ubuntu
+            os-vsn: 22.04
+            otp-version: 25
+            rebar3-version: 3.22
+          - os-base: ubuntu
+            os-vsn: 22.04
+            otp-version: 26
+            rebar3-version: 3.22
+          - os-base: windows
+            os-vsn: 2022
+            otp-version: 25
+            rebar3-version: 3.22
+          - os-base: windows
+            os-vsn: 2022
+            otp-version: 26
+            rebar3-version: 3.22
+          # macos, for now, is considered best-effort
+          - os-base: macos
+            os-vsn: 12
+            otp-version: 25
+            rebar3-version: 3.22
+          - os-base: macos  # macos, for now, is considered best-effort
+            os-vsn: 12
+            otp-version: 26
+            rebar3-version: 3.22
 
-    runs-on: ${{matrix.runs-on}}
+    runs-on: ${{matrix.os-base}}-${{matrix.os-vsn}}
 
     steps:
       - uses: actions/checkout@v3
@@ -30,6 +47,12 @@ jobs:
         with:
           otp-version: ${{matrix.otp-version}}
           rebar3-version: ${{matrix.rebar3-version}}
+        if: ${{matrix.os-base != 'macos'}}
+
+      - run: |
+          brew install erlang@${{matrix.otp-version}}
+          brew install rebar3
+        if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
         uses: actions/cache@v3
@@ -40,6 +63,7 @@ jobs:
                 -otp-${{steps.setup-beam.outputs.otp-version}}\
                 -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
                 -hash-${{hashFiles('rebar.lock')}}"
+        if: ${{matrix.os-base != 'macos'}}
 
       - name: Restore rebar3's cache
         uses: actions/cache@v3
@@ -50,12 +74,11 @@ jobs:
                 -otp-${{steps.setup-beam.outputs.otp-version}}\
                 -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
                 -hash-${{hashFiles('rebar.lock')}}"
+        if: ${{matrix.os-base != 'macos'}}
+
+      - name: Check file format
+        run: rebar3 fmt --check
+        if: ${{matrix.os-base != 'windows'}}
 
       - name: Continuous Integration
-        run: rebar3 ci
-
-      - name: checkshell  # Eat our own dog food
-        env:
-          DIAGNOSTIC: 1
-        run: |
-          rebar3 as test checkshell --files priv/update.sh
+        run: rebar3 as test ci

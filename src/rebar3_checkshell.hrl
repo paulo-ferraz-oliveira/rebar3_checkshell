@@ -1,0 +1,2 @@
+-type ubyte() :: 1..255.
+-type nonempty_ubytes() :: [ubyte(), ...].

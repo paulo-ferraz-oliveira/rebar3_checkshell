@@ -108,28 +108,26 @@ You'll find a complete list of checks under
 [ShellCheck - Checks](https://github.com/koalaman/shellcheck/wiki/Checks). This is the canonical
 Wiki; it is not maintained by this plugin's maintainers.
 
-### Restrictions
+### Downloading and caching executables
 
-Since we're bundling the binary elements for ShellCheck analysis (and they are obtained from
-pre-compiled sources, online, for a given "latest" version), it is possible that the analysis
-won't executed out-of-the-box and exit with an uncontrolled error. If fixing that issue is really
-important to you, [open an issue](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/issues)
-so we can find a solution.
+Executables are downloaded and cached inside `~/.cache/rebar3/checkshell`, per version and
+platform. As long as the version doesn't change or you don't delete the sources, they are only
+downloaded once and subsequently reused.
 
-**Note**: to verify that the downloaded files haven't been tampered with, go to `priv`, study
-the content of `update.sh` and then run it when you're ready. You'll see that we download the
-files to specific folder but don't touch them otherwise. Also, doing this on a non-tampered version
-should yield no changes to the file under Git source control.
+**Note**: to verify that the downloaded files haven't been tampered with, we implemen a basic
+MD5-based checksum (using `crypto`) against the files we're about to execute. If the checksums
+don't coincide, the execution is aborted. You can override this by setting option
+`{checkshell, [{checksum, false}]}.` in `rebar.config`.
 
 ## The project
 
 ### Changelog
 
-A complete changelog can be found under [CHANGELOG.md](CHANGELOG.md).
+A complete changelog can be found under [CHANGELOG.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/CHANGELOG.md).
 
 ### Code of Conduct
 
-This project's code of conduct is made explicit in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+This project's code of conduct is made explicit in [CODE_OF_CONDUCT.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/CODE_OF_CONDUCT.md).
 
 ### Contributing
 
@@ -146,12 +144,12 @@ might have already been answered before.
 Contributions will be subject to GNU General Public License 3.0.
 You will retain the copyright.
 
-For more information check out [CONTRIBUTING.md](CONTRIBUTING.md).
+For more information check out [CONTRIBUTING.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/CONTRIBUTING.md).
 
-## License
+### License
 
-License information can be found inside [LICENSE](LICENSE).
+License information can be found inside [LICENSE](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/LICENSE).
 
-## Security
+### Security
 
-This project's security policy is made explicit in [SECURITY.md](SECURITY.md).
+This project's security policy is made explicit in [SECURITY.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/SECURITY.md).

@@ -1,7 +1,15 @@
 {application, rebar3_checkshell, [
     {description, "A rebar3 plugin to ease shellcheck'ing"},
     {vsn, semver},
-    {applications, [kernel, stdlib, sasl]},
-    {licenses, ["GNU General Public License 3.0"]},
+    {applications, [
+        % OTP dependencies
+        crypto,
+        kernel,
+        stdlib,
+        sasl,
+        % External dependencies
+        tls_certificate_check
+    ]},
+    {licenses, ["GPL-3.0-only"]},
     {links, [{"GitHub", "https://github.com/paulo-ferraz-oliveira/rebar3_checkshell"}]}
 ]}.
