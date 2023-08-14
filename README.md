@@ -85,16 +85,19 @@ and apply the analysis on top of that.
 
 ### Check it out
 
+<!-- markdownlint-disable MD013 -->
 ```console
 ===> Compiling rebar3_checkshell
-In script.sh line 2:
-VAR=none
-^-- SC2034: VAR appears unused. Verify use (or export if used externally).
+===> checkshell: analysis starting. This may take a while...
+In sh/fish.sh line 1:
+#!/usr/bin/env fish
+^-- SC1008 (error): This shebang was unrecognized. ShellCheck only supports sh/bash/dash/ksh. Add a 'shell' directive to specify.
 
 For more information:
-  https://www.shellcheck.net/wiki/SC2034 -- A appears unused. Verify use (or ...
+  https://www.shellcheck.net/wiki/SC1008 -- This shebang was unrecognized. Sh...
 ===> checkshell: ShellCheck exited with error
 ```
+<!-- markdownlint-enable -->
 
 ### Ignoring issues
 

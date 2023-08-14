@@ -13,6 +13,8 @@
 
 -export_type([nonempty_ubytes/0]).
 
+-elvis([{elvis_style, no_debug_call, disable}]).
+
 -spec do(Files, State) -> Result when
     Files :: [string()],
     Result :: {ok, State} | {error, nonempty_ubytes()}.
@@ -125,6 +127,6 @@ opt(UnknownOption) ->
     AnalysisRes :: string(),
     Result :: ok.
 output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
-    rebar3_checkshell_utils:log(warn, "~p", [string:sub_string(AnalysisRes, 2)], false);
+    io:format("~s", [string:sub_string(AnalysisRes, 2)]);
 output_shellcheck_analysis(_Failure, AnalysisRes) ->
     rebar3_checkshell_utils:log(warn, "~p", [AnalysisRes], false).

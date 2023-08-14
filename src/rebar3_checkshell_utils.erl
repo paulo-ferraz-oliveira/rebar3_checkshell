@@ -51,16 +51,16 @@ log(Level, Format0, Args, WithPrefix) ->
     ct_pal_log0(Level, Format, Args),
     ok.
 
--spec with_prefix(WithPrefix, Format) -> Result
-when WithPrefix :: boolean(),
-Format :: io:format(),
-Result :: io:format().
+-spec with_prefix(WithPrefix, Format) -> Result when
+    WithPrefix :: boolean(),
+    Format :: io:format(),
+    Result :: io:format().
 with_prefix(false = _WithPrefix, Format) ->
     Format;
 with_prefix(true = _WithPrefix, Format) ->
-    "shellcheck: " ++ Format.
+    "checkshell: " ++ Format.
 
--spec ct_pal_log(Level, Format, Args) -> Result when
+-spec ct_pal_log0(Level, Format, Args) -> Result when
     Level :: debug | info | warn,
     Format :: io:format(),
     Args :: [term()],
@@ -72,6 +72,11 @@ ct_pal_log0(info = _Level, _Format, _Args) ->
 ct_pal_log0(Level, Format, Args) ->
     ct_pal_log(Level, Format, Args).
 
+-spec ct_pal_log(Level, Format, Args) -> Result when
+    Level :: warn,
+    Format :: io:format(),
+    Args :: [term()],
+    Result :: ok.
 -ifdef(TEST).
 ct_pal_log(Level, Format, Args) ->
     ct:pal(Level, 99, Format, Args, []).

@@ -1,6 +1,8 @@
 -module(rebar3_checkshell_SUITE).
 
--compile([export_all, nowarn_export_all]).
+-compile([export_all, nowarn_export_all, nowarn_missing_spec_all]).
+
+-hank([{unnecessary_function_arguments, [{end_per_testcase, 2}, {init_per_testcase, 2}]}]).
 
 %
 %% Configuration.
@@ -104,6 +106,10 @@ opt_checksum(Config) ->
     mock_opts(Config, [{checksum, false}]),
     {ok, _} = exec().
 
+opt_unknown(Config) ->
+    mock_opts(Config, [{unknown_opt1, false}]),
+    {ok, _} = exec().
+
 %
 %% Internal.
 
@@ -111,12 +117,13 @@ exec() ->
     rebar3_checkshell_prv:do(rebar_state:new()).
 
 mock_opts(Config, Opts0) ->
-    Opts = case proplists:get_value(files, Opts0) of
-        undefined ->
-            DataDir = proplists:get_value(data_dir, Config),
-            EmptySh = filename:join(DataDir, "empty.sh"),
-            Opts0 ++ [{files, [EmptySh]}];
-        _ ->
-            Opts0
-    end,
+    Opts =
+        case proplists:get_value(files, Opts0) of
+            undefined ->
+                DataDir = proplists:get_value(data_dir, Config),
+                EmptySh = filename:join(DataDir, "empty.sh"),
+                Opts0 ++ [{files, [EmptySh]}];
+            _ ->
+                Opts0
+        end,
     meck:expect(rebar3_checkshell_prv, opts, fun(_State) -> Opts end).
