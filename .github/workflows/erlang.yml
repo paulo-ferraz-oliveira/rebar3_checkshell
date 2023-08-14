@@ -85,5 +85,5 @@ jobs:
 
       - name: Dog food
         run: |
-          rebar3 as test escriptize
+          rebar3 escriptize
           _build/default/bin/rebar3_checkshell test/rebar3_checkshell_SUITE_data/empty.sh
