@@ -84,99 +84,33 @@ maybe_colorize(_Color) ->
     Result :: string() | list().
 opt(check_sourced) ->
     "--check-sourced";
-opt({color, Color}) when Color =:= auto orelse Color =:= always orelse Color =:= never ->
+opt({color, Color}) ->
     "--color=" ++ atom_to_list(Color);
 opt({include, Includes}) ->
-    "--include=" ++
-        lists:foldl(
-            fun
-                (Include, "" = _Acc) when is_list(Include) ->
-                    Include;
-                (Include, Acc) when is_list(Include) ->
-                    Acc ++ "," ++ Include;
-                (Include, Acc) ->
-                    _ = rebar3_checkshell_utils:log(
-                        warn,
-                        "checkshell: non-string value for option include: ~p",
-                        [Include]
-                    ),
-                    Acc
-            end,
-            "",
-            Includes
-        );
+    "--include=" ++ string:join(Includes, ",");
 opt({exclude, Excludes}) ->
-    "--exclude=" ++
-        lists:foldl(
-            fun
-                (Exclude, "" = _Acc) when is_list(Exclude) ->
-                    Exclude;
-                (Exclude, Acc) when is_list(Exclude) ->
-                    Acc ++ "," ++ Exclude;
-                (Exclude, Acc) ->
-                    _ = rebar3_checkshell_utils:log(
-                        warn,
-                        "checkshell: non-string value for option exclude: ~p",
-                        [Exclude]
-                    ),
-                    Acc
-            end,
-            "",
-            Excludes
-        );
-opt({format, Format}) when
-    Format =:= checkstyle orelse
-        Format =:= diff orelse
-        Format =:= gcc orelse
-        Format =:= json orelse
-        Format =:= json1 orelse
-        Format =:= quiet orelse
-        Format =:= tty
-->
+    "--exclude=" ++ string:join(Excludes, ",");
+opt({format, Format}) ->
     "--format=" ++ atom_to_list(Format);
 opt(list_optional) ->
     "--list-optional";
 opt(norc) ->
     "--norc";
-opt({enable, Checks}) when is_list(Checks) ->
-    "--enable=" ++
-        lists:foldl(
-            fun
-                (Check, "" = _Acc) when is_list(Check) ->
-                    Check;
-                (Check, Acc) when is_list(Check) ->
-                    Acc ++ "," ++ Check;
-                (Check, Acc) ->
-                    _ = rebar3_checkshell_utils:log(
-                        warn,
-                        "checkshell: non-string value for option enable: ~p",
-                        [Check]
-                    ),
-                    Acc
-            end,
-            "",
-            Checks
-        );
 opt({enable, all}) ->
     "--enable=all";
-opt({source_paths, SourcePaths}) when is_list(SourcePaths) ->
-    "--source-path=" ++ SourcePaths;
-opt({shell, Shell}) when
-    Shell =:= sh orelse Shell =:= bash orelse Shell =:= dash orelse Shell =:= ksh
-->
+opt({enable, Checks}) ->
+    "--enable=" ++ string:join(Checks, ",");
+opt({source_path, SourcePath}) ->
+    "--source-path=" ++ SourcePath;
+opt({shell, Shell}) ->
     "--shell=" ++ atom_to_list(Shell);
-opt({severity, Severity}) when
-    Severity =:= error orelse
-        Severity =:= warning orelse
-        Severity =:= info orelse
-        Severity =:= style
-->
+opt({severity, Severity}) ->
     "--severity=" ++ atom_to_list(Severity);
-opt({wiki_link_count, Num}) when is_integer(Num) andalso Num > 0 ->
+opt({wiki_link_count, Num}) ->
     "--wiki-link-count=" ++ integer_to_list(Num);
 opt(external_sources) ->
     "--external-sources";
-opt({files, Files}) when is_list(Files) ->
+opt({files, Files}) ->
     Files;
 opt(UnknownOption) ->
     _ = rebar3_checkshell_utils:log(

@@ -59,7 +59,7 @@ There are no compulsory options (all defaults are those assumed by `shellcheck`)
     {enable, ["check1", "check2"] | all},
 
     % Specify path when looking for sourced files ("SCRIPTDIR" for script's dir)
-    {source_paths, "SOURCEPATHS"},
+    {source_path, "SOURCEPATH"},
 
     % Specify dialect (sh, bash, dash, ksh)
     {shell, sh | bash | dash | ksh},
