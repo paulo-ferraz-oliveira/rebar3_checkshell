@@ -63,8 +63,8 @@ do(State) ->
     Files :: [string()],
     Result :: {ok, State} | {error, nonempty_ubytes()}.
 do_for(Files, State) ->
-    _ = rebar_log:log(
-        info, "checkshell: analysis starting. This may take a while...", []
+    _ = rebar3_checkshell_utils:log(
+        info, "analysis starting. This may take a while...", []
     ),
     rebar3_checkshell_arch:do(Files, State).
 
@@ -93,7 +93,7 @@ opt(State, Opt) ->
     Default :: term(),
     Result :: undefined | opt().
 opt(State, Opt, Default) ->
-    Opts = opts(State),
+    Opts = ?MODULE:opts(State),
     proplists:get_value(Opt, Opts, Default).
 
 -spec files_from_cli(State) -> Result when
