@@ -49,9 +49,6 @@ There are no compulsory options (all defaults are those assumed by `shellcheck`)
     % Output format (checkstyle, diff, gcc, json, json1, quiet, tty)
     {format, checkstyle | diff | gcc | json | json1 | quiet | tty},
 
-    % List checks disabled by default
-    list_optional,
-
     % Don't look for .shellcheckrc files
     norc,
 
