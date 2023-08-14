@@ -115,7 +115,7 @@ opt({files, Files}) ->
 opt(UnknownOption) ->
     _ = rebar3_checkshell_utils:log(
         warn,
-        "checkshell: unknown rebar.config option ~p",
+        "unknown rebar.config option ~p",
         [UnknownOption]
     ),
     "".
@@ -125,6 +125,6 @@ opt(UnknownOption) ->
     AnalysisRes :: string(),
     Result :: ok.
 output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
-    rebar3_checkshell_utils:log(warn, "~p", [string:sub_string(AnalysisRes, 2)]);
+    rebar3_checkshell_utils:log(warn, "~p", [string:sub_string(AnalysisRes, 2)], false);
 output_shellcheck_analysis(_Failure, AnalysisRes) ->
-    rebar3_checkshell_utils:log(warn, "~p", [AnalysisRes]).
+    rebar3_checkshell_utils:log(warn, "~p", [AnalysisRes], false).

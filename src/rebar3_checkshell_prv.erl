@@ -64,7 +64,7 @@ do(State) ->
     Result :: {ok, State} | {error, nonempty_ubytes()}.
 do_for(Files, State) ->
     _ = rebar3_checkshell_utils:log(
-        info, "checkshell: analysis starting. This may take a while...", []
+        info, "analysis starting. This may take a while...", []
     ),
     rebar3_checkshell_arch:do(Files, State).
 
