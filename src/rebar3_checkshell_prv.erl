@@ -93,7 +93,7 @@ opt(State, Opt) ->
     Default :: term(),
     Result :: undefined | opt().
 opt(State, Opt, Default) ->
-    Opts = opts(State),
+    Opts = ?MODULE:opts(State),
     proplists:get_value(Opt, Opts, Default).
 
 -spec files_from_cli(State) -> Result when
