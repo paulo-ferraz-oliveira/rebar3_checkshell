@@ -2,10 +2,10 @@
 name: Update dependencies
 
 "on": [push, pull_request]
-#"on":
-#  schedule:
-#    - cron: '0 12 * * *'
-#  workflow_dispatch:
+# "on":
+#   schedule:
+#     - cron: '0 12 * * *'
+#   workflow_dispatch:
 
 jobs:
   update:
