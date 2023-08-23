@@ -1,13 +1,13 @@
 {"1.2.0",
 [{<<"ssl_verify_fun">>,{pkg,<<"ssl_verify_fun">>,<<"1.1.7">>},1},
  {<<"tls_certificate_check">>,
-  {pkg,<<"tls_certificate_check">>,<<"1.19.0">>},
+  {pkg,<<"tls_certificate_check">>,<<"1.20.0">>},
   0}]}.
 [
 {pkg_hash,[
  {<<"ssl_verify_fun">>, <<"354C321CF377240C7B8716899E182CE4890C5938111A1296ADD3EC74CF1715DF">>},
- {<<"tls_certificate_check">>, <<"C76C4C5D79EE79A2B11C84F910C825D6F024A78427C854F515748E9BD025E987">>}]},
+ {<<"tls_certificate_check">>, <<"1AC0C53F95E201FEB8D398EF9D764AE74175231289D89F166BA88A7F50CD8E73">>}]},
 {pkg_hash_ext,[
  {<<"ssl_verify_fun">>, <<"FE4C190E8F37401D30167C8C405EDA19469F34577987C76DDE613E838BBC67F8">>},
- {<<"tls_certificate_check">>, <<"4083B4A298ADD534C96125337CB01161C358BB32DD870D5A893AAE685FD91D70">>}]}
+ {<<"tls_certificate_check">>, <<"AB57B74B1A63DC5775650699A3EC032EC0065005EFF1F020818742B7312A8426">>}]}
 ].
