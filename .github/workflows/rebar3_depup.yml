@@ -15,7 +15,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: erlef/setup-beam@v1
         with:
-          rebar3-version: 'nightly'
+          otp-version: 26
+          rebar3-version: 3
       - run: ./.github/workflows/rebar3_depup.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
