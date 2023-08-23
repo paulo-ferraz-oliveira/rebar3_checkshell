@@ -82,3 +82,8 @@ jobs:
 
       - name: Continuous Integration
         run: rebar3 as test ci
+
+      - name: Lint rebar3_depup.sh
+        run: |
+          rebar3 escriptize
+          _build/default/bin/rebar3_checkshell .github/workflows/rebar3_depup.sh

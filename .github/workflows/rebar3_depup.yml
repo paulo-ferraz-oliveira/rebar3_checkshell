@@ -1,0 +1,21 @@
+---
+name: Update dependencies
+
+"on": [push, pull_request]
+#"on":
+#  schedule:
+#    - cron: '0 12 * * *'
+#  workflow_dispatch:
+
+jobs:
+  update:
+    name: Update dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1
+        with:
+          rebar3-version: 'nightly'
+      - run: ./.github/workflows/rebar3_depup.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
