@@ -17,6 +17,8 @@ git checkout -b "$BRANCH"
 mkdir -p "$HOME/.config/rebar3"
 echo "{plugins, [rebar3_depup]}." > "$HOME/.config/rebar3/rebar.config"
 rebar3 update-deps --replace
+rebar3 upgrade --all
+rebar3 fmt
 
 if ! git diff --exit-code 1> /dev/null ; then
     # there's stuff to push
