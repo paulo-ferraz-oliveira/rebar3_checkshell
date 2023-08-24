@@ -11,6 +11,6 @@
         % External dependencies
         tls_certificate_check
     ]},
-    {licenses, ["GPL-3.0-only"]},
+    {licenses, ["MIT"]},
     {links, [{"GitHub", "https://github.com/paulo-ferraz-oliveira/rebar3_checkshell"}]}
 ]}.
