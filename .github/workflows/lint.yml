@@ -19,6 +19,7 @@ jobs:
           globs: |
             .github/**/*.md
             *.md
+            LICENSE
 
       - name: yamllint
         uses: ibiqlik/action-yamllint@v3

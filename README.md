@@ -158,7 +158,7 @@ Bug reports and questions are also welcome, but do check you're using the latest
 plugin - if you found a bug - and/or search the issue database - if you have a question, since it
 might have already been answered before.
 
-Contributions will be subject to GNU General Public License 3.0.
+Contributions will be subject to the MIT License.
 You will retain the copyright.
 
 For more information check out [CONTRIBUTING.md](https://github.com/paulo-ferraz-oliveira/rebar3_checkshell/blob/main/CONTRIBUTING.md).
