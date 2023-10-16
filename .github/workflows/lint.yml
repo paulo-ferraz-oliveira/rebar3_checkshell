@@ -29,3 +29,8 @@ jobs:
             .*.yml
           strict: true
           config_file: .yamllint.yml
+
+      - name: actionlint
+        uses: reviewdog/action-actionlint@v1
+        env:
+          SHELLCHECK_OPTS: -o all
