@@ -5,6 +5,7 @@ set -eux
 git config user.name "GitHub Actions"
 git config user.email "actions@user.noreply.github.com"
 
+git fetch origin
 BRANCHES=$(git branch -a)
 BRANCH=feature/rebar3-depup-updates
 if echo "${BRANCHES}" | grep "${BRANCH}" >/dev/null; then
@@ -12,7 +13,6 @@ if echo "${BRANCHES}" | grep "${BRANCH}" >/dev/null; then
     exit
 fi
 
-git fetch origin
 git checkout -b "${BRANCH}"
 mkdir -p "${HOME}/.config/rebar3"
 echo "{plugins, [rebar3_depup]}." >"${HOME}/.config/rebar3/rebar.config"
