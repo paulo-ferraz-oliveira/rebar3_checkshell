@@ -5,8 +5,9 @@ set -eux
 git config user.name "GitHub Actions"
 git config user.email "actions@user.noreply.github.com"
 
+BRANCHES=$(git branch -a)
 BRANCH=feature/rebar3-depup-updates
-if (git branch -a || true) | grep "${BRANCH}" >/dev/null; then
+if echo "${BRANCHES}" | grep "${BRANCH}" >/dev/null; then
     # exists
     exit
 fi
