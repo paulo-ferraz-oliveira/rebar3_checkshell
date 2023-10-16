@@ -6,9 +6,8 @@ git config user.name "GitHub Actions"
 git config user.email "actions@user.noreply.github.com"
 
 BRANCH=feature/rebar3-depup-updates
-
-if git branch -a | grep "${BRANCH}" >/dev/null || true; then
-    # already exists
+if (git branch -a || true) | grep "${BRANCH}" >/dev/null; then
+    # exists
     exit
 fi
 
@@ -18,15 +17,15 @@ mkdir -p "${HOME}/.config/rebar3"
 echo "{plugins, [rebar3_depup]}." >"${HOME}/.config/rebar3/rebar.config"
 rebar3 up
 
-if ! git diff --exit-code 1>/dev/null; then
+if ! git diff --exit-code >/dev/null; then
+    # there's stuff to push
     TITLE="[automation] Update \`rebar.config\` versions (via \`rebar3 depup\`)"
 
-    # there's stuff to push
     git add rebar.config
     git commit -m "${TITLE}"
     git push origin "${BRANCH}"
 
     gh pr create --fill \
         --title "${TITLE}" \
-        --body "This is an automated action to update the repositories rebar.config versions"
+        --body "This is an automated action to update the repository's \`rebar.config\` versions."
 fi
