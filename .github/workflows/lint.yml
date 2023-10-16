@@ -14,7 +14,7 @@ jobs:
 
       # uses .markdownlint.yml for configuration
       - name: markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v11
+        uses: DavidAnson/markdownlint-cli2-action@v13
         with:
           globs: |
             .github/**/*.md
@@ -29,3 +29,8 @@ jobs:
             .*.yml
           strict: true
           config_file: .yamllint.yml
+
+      - name: actionlint
+        uses: reviewdog/action-actionlint@v1
+        env:
+          SHELLCHECK_OPTS: -o all
