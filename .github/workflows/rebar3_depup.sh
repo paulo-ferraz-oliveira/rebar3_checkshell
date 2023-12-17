@@ -25,6 +25,7 @@ if ! git diff --exit-code >/dev/null; then
     TITLE="[automation] Update \`rebar.config\` versions (via \`rebar3 depup\`)"
 
     git add rebar.config
+    git add rebar.lock
     git commit -m "${TITLE}"
     git push origin "${BRANCH}"
 
