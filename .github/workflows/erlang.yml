@@ -4,45 +4,61 @@ name: Erlang CI
 "on": [push, workflow_dispatch]
 
 jobs:
+  vsns:
+    runs-on: ubuntu-22.04
+    outputs:
+      # renovate datasource: github-runners, depName: ubuntu
+      ubuntu: 20.04
+      # renovate datasource: github-runners, depName: windows
+      windows: 2019
+      # renovate datasource: github-runners, depName: macos
+      macos: 12
+      # renovate datasource: github-tags, depName: erlang/rebar3
+      rebar3: 3.22.1
+
+    steps:
+      - run: echo "versions set!"
+
   ci:
     name: Erlang CI
+    needs: [vsns]
 
     strategy:
       fail-fast: false
       matrix:
         include:
           - os-base: ubuntu
-            os-vsn: 22.04
+            os-vsn: ${{ needs.vsns.outputs.ubuntu }}
             otp-version: 25
-            rebar3-version: 3.22
+            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: ubuntu
-            os-vsn: 22.04
+            os-vsn: ${{ needs.vsns.outputs.ubuntu }}
             otp-version: 26
-            rebar3-version: 3.22
+            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: windows
-            os-vsn: 2022
+            os-vsn: ${{ needs.vsns.outputs.windows }}
             otp-version: 25
-            rebar3-version: 3.22
+            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: windows
-            os-vsn: 2022
+            os-vsn: ${{ needs.vsns.outputs.windows }}
             otp-version: 26
-            rebar3-version: 3.22
+            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           # macos, for now, is considered best-effort
           - os-base: macos
-            os-vsn: 12
+            os-vsn: ${{ needs.vsns.outputs.macos }}
             otp-version: 25
-            rebar3-version: 3.22
+            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: macos  # macos, for now, is considered best-effort
-            os-vsn: 12
+            os-vsn: ${{ needs.vsns.outputs.macos }}
             otp-version: 26
-            rebar3-version: 3.22
+            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
 
     runs-on: ${{matrix.os-base}}-${{matrix.os-vsn}}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.6
 
-      - uses: erlef/setup-beam@v1
+      - uses: erlef/setup-beam@v1.17.5
         id: setup-beam
         with:
           otp-version: ${{matrix.otp-version}}
@@ -55,7 +71,7 @@ jobs:
         if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
-        uses: actions/cache@v3
+        uses: actions/cache@v4.0.2
         with:
           path: _build
           key: "_build-cache-for\
@@ -66,7 +82,7 @@ jobs:
         if: ${{matrix.os-base != 'macos'}}
 
       - name: Restore rebar3's cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4.0.2
         with:
           path: ~/.cache/rebar3
           key: "rebar3-cache-for\

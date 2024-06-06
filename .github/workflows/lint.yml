@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1.6
 
       # uses .markdownlint.yml for configuration
       - name: markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v13
+        uses: DavidAnson/markdownlint-cli2-action@v16.0.0
         with:
           globs: |
             .github/**/*.md
@@ -22,7 +22,7 @@ jobs:
             LICENSE
 
       - name: yamllint
-        uses: ibiqlik/action-yamllint@v3
+        uses: ibiqlik/action-yamllint@v3.1.1
         with:
           file_or_dir: |
             .github/**/*.yml
@@ -31,6 +31,6 @@ jobs:
           config_file: .yamllint.yml
 
       - name: actionlint
-        uses: reviewdog/action-actionlint@v1
+        uses: reviewdog/action-actionlint@v1.48.0
         env:
           SHELLCHECK_OPTS: -o all
