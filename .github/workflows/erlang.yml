@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       # renovate datasource: github-runners, depName: ubuntu
-      ubuntu: 20.04
+      ubuntu: 22.04
       # renovate datasource: github-runners, depName: windows
-      windows: 2019
+      windows: 2022
       # renovate datasource: github-runners, depName: macos
-      macos: 12
+      macos: 14
       # renovate datasource: github-tags, depName: erlang/rebar3
       rebar3: 3.22.1
 
