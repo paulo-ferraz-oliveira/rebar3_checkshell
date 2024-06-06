@@ -17,7 +17,7 @@ jobs:
       rebar3: 3.22.1
 
     steps:
-      - run: versions set!
+      - run: echo "versions set!"
 
   ci:
     name: Erlang CI
