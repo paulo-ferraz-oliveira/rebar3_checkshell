@@ -1,0 +1,30 @@
+---
+name: Update dependencies
+
+"on": [push, workflow_dispatch]
+
+jobs:
+  update:
+    name: Update rebar.lock
+    if: "${{ github.ref == 'refs/heads/renovate/rebar.config-deps' }}"
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4.1.6
+
+      - uses: erlef/setup-beam@v1.17.6
+        with:
+          version-type: strict
+          version-file: .tool-versions
+
+      - run: |
+          rebar3 upgrade --all
+          if ! git diff --exit-code >/dev/null; then
+              # there's stuff to push
+              git config user.name "GitHub Actions"
+              git config user.email "actions@user.noreply.github.com"
+              git add rebar.lock
+              git commit -m "[automation] update \`rebar.lock\` after Renovate"
+              git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
