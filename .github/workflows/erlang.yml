@@ -56,9 +56,9 @@ jobs:
     runs-on: ${{matrix.os-base}}-${{matrix.os-vsn}}
 
     steps:
-      - uses: actions/checkout@v4.1.6
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
 
-      - uses: erlef/setup-beam@v1.17.5
+      - uses: erlef/setup-beam@0a541161e47ec43ccbd9510053c5f336ca76c2a2 # v1.17.6
         id: setup-beam
         with:
           otp-version: ${{matrix.otp-version}}
@@ -71,7 +71,7 @@ jobs:
         if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: _build
           key: "_build-cache-for\
@@ -82,7 +82,7 @@ jobs:
         if: ${{matrix.os-base != 'macos'}}
 
       - name: Restore rebar3's cache
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ~/.cache/rebar3
           key: "rebar3-cache-for\
