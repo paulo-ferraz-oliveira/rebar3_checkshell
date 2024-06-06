@@ -43,8 +43,9 @@
       ],
       "datasourceTemplate": "hex",
       "matchStrings": [
-        "\\{(?<depName>[^,]+), \"(?<currentValue>\\d+(\\.\\d+)?(\\.\\d+)?)\"\\}"
-      ]
+        "{(?<depName>[^,]+), \"(?<currentValue>\\d+\\.\\d+(\\.\\d+)?)\""
+      ],
+      "versioningTemplate": "semver"
     }
   ]
 }
