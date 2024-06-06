@@ -55,7 +55,7 @@ jobs:
         if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: _build
           key: "_build-cache-for\
@@ -66,7 +66,7 @@ jobs:
         if: ${{matrix.os-base != 'macos'}}
 
       - name: Restore rebar3's cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/rebar3
           key: "rebar3-cache-for\
