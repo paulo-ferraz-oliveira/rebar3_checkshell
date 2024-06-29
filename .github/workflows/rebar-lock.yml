@@ -1,5 +1,5 @@
 ---
-name: Update dependencies
+name: Update rebar.lock
 
 "on":
   push:
@@ -9,12 +9,35 @@ name: Update dependencies
     branches:
       - "*"
   workflow_dispatch: {}
+  merge_group:
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
 
 jobs:
+  branch:
+    outputs:
+      head_ref: ${{steps.branch.outputs.head_ref}}
+
+    runs-on: ubuntu-24.04
+
+    steps:
+      - id: branch
+        run: |
+          head_ref=${GITHUB_HEAD_REF}
+          echo "head_ref is ${head_ref}"
+          echo "head_ref=${head_ref}" > "${GITHUB_OUTPUT}"
+
   update:
     name: Update rebar.lock
-    if: "${{ github.ref == 'refs/heads/renovate/rebar.config-deps' }}"
-    runs-on: ubuntu-22.04
+
+    needs: [branch]
+
+    if: endsWith(needs.branch.outputs.head_ref, 'rebar.config-deps')
+
+    runs-on: ubuntu-24.04
+
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
