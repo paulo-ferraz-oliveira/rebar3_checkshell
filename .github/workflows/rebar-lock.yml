@@ -40,6 +40,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          ref: ${{needs.branch.outputs.head_ref}}
 
       - uses: erlef/setup-beam@a6e26b22319003294c58386b6f25edbc7336819a # v1.18.0
         with:
@@ -57,4 +59,4 @@ jobs:
               git push
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
