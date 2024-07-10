@@ -36,28 +36,28 @@ jobs:
         include:
           - os-base: ubuntu
             os-vsn: ${{ needs.vsns.outputs.ubuntu }}
-            otp-version: 25
+            otp-version: 26
             rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: ubuntu
             os-vsn: ${{ needs.vsns.outputs.ubuntu }}
-            otp-version: 26
-            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
-          - os-base: windows
-            os-vsn: ${{ needs.vsns.outputs.windows }}
-            otp-version: 25
+            otp-version: 27
             rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: windows
             os-vsn: ${{ needs.vsns.outputs.windows }}
             otp-version: 26
+            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
+          - os-base: windows
+            os-vsn: ${{ needs.vsns.outputs.windows }}
+            otp-version: 27
             rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           # macos, for now, is considered best-effort
           - os-base: macos
             os-vsn: ${{ needs.vsns.outputs.macos }}
-            otp-version: 25
+            otp-version: 26
             rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: macos  # macos, for now, is considered best-effort
             os-vsn: ${{ needs.vsns.outputs.macos }}
-            otp-version: 26
+            otp-version: 27
             rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
 
     runs-on: ${{matrix.os-base}}-${{matrix.os-vsn}}
