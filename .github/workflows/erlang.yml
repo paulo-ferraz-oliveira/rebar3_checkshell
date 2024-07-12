@@ -44,7 +44,8 @@ jobs:
             rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: windows
             os-vsn: ${{ needs.vsns.outputs.windows }}
-            otp-version: 26
+            # 26.2.5.2 failing for some reason...
+            otp-version: 26.2.5.1
             rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: windows
             os-vsn: ${{ needs.vsns.outputs.windows }}
