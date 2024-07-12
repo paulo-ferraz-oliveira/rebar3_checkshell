@@ -74,8 +74,11 @@ jobs:
         if: ${{matrix.os-base != 'macos'}}
 
       - run: |
-          brew install erlang@${{matrix.otp-version}}
-          brew install rebar3
+          # there be dragons
+          sed -i '' 's/erlang .*/erlang ${{matrix.otp-version}}/g' .tool-versions
+        if: ${{matrix.os-base == 'macos'}}
+
+      - uses: asdf-vm/actions/install@v3.0.2
         if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
