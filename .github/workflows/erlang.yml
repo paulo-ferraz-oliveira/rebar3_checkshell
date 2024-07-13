@@ -20,8 +20,6 @@ jobs:
       windows: 2022
       # renovate datasource: github-runners, depName: macos
       macos: 14
-      # renovate datasource: github-tags, depName: erlang/rebar3
-      rebar3: 3.24.0
 
     steps:
       - run: echo "versions set!"
@@ -36,30 +34,10 @@ jobs:
         include:
           - os-base: ubuntu
             os-vsn: ${{ needs.vsns.outputs.ubuntu }}
-            otp-version: 26
-            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
-          - os-base: ubuntu
-            os-vsn: ${{ needs.vsns.outputs.ubuntu }}
-            otp-version: 27
-            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: windows
             os-vsn: ${{ needs.vsns.outputs.windows }}
-            # 26.2.5.2 failing for some reason...
-            otp-version: 26.2.5.1
-            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
-          - os-base: windows
-            os-vsn: ${{ needs.vsns.outputs.windows }}
-            otp-version: 27
-            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
-          # macos, for now, is considered best-effort
-          - os-base: macos
-            os-vsn: ${{ needs.vsns.outputs.macos }}
-            otp-version: 26
-            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
           - os-base: macos  # macos, for now, is considered best-effort
             os-vsn: ${{ needs.vsns.outputs.macos }}
-            otp-version: 27
-            rebar3-version: ${{ needs.vsns.outputs.rebar3 }}
 
     runs-on: ${{matrix.os-base}}-${{matrix.os-vsn}}
 
@@ -69,16 +47,14 @@ jobs:
       - uses: erlef/setup-beam@b9c58b0450cd832ccdb3c17cc156a47065d2114f # v1.18.1
         id: setup-beam
         with:
-          otp-version: ${{matrix.otp-version}}
-          rebar3-version: ${{matrix.rebar3-version}}
+          version-type: strict
+          version-file: .tool-versions
         if: ${{matrix.os-base != 'macos'}}
 
       - run: |
           # there be dragons
-          sed -i '' 's/erlang .*/erlang ${{matrix.otp-version}}/g' .tool-versions
-        if: ${{matrix.os-base == 'macos'}}
-
-      - uses: asdf-vm/actions/install@v3.0.2
+          erlang=$(< .tool-versions grep erlang | sed -E 's/erlang ([^\.]+).*/\1/g')
+          brew install "erlang@${erlang}"
         if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
