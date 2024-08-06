@@ -18,10 +18,10 @@
       "groupName": "rebar.config deps"
     },
     {
-      "matchPackagePrefixes": [
-        "minimum_otp_vsn"
-      ],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": [
+        "minimum_otp_vsn{/,}**"
+      ]
     }
   ],
   "customManagers": [
