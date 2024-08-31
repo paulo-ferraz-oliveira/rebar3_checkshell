@@ -21,7 +21,7 @@ jobs:
       # renovate datasource: github-runners, depName: macos
       macos: 14
       # renovate datasource: github-tags, depName: erlang/rebar3
-      rebar3: 3.23.0
+      rebar3: 3.24.0
 
     steps:
       - run: echo "versions set!"
