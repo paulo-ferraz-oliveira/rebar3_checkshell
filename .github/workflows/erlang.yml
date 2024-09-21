@@ -53,6 +53,7 @@ jobs:
 
       - run: |
           # there be dragons
+          brew update
           erlang=$(< .tool-versions grep erlang | sed -E 's/erlang ([^\.]+).*/\1/g')
           brew install "erlang@${erlang}"
         if: ${{matrix.os-base == 'macos'}}
