@@ -28,8 +28,8 @@
     {
       "description": "Match versions (per datasource and depName) in .github/**/*.yml",
       "customType": "regex",
-      "fileMatch": [
-        ".github/.*/.*\\.yml"
+      "managerFilePatterns": [
+        "/.github/.*/.*\\.yml/"
       ],
       "matchStrings": [
         "# renovate datasource: (?<datasource>[^,]+), depName: (?<depName>[^\\n]+)\\n.+?(?<currentValue>v?\\d+(\\.\\d+(\\.\\d+)?)?)\\n"
@@ -38,8 +38,8 @@
     {
       "description": "Match versions in rebar.config",
       "customType": "regex",
-      "fileMatch": [
-        "rebar.config"
+      "managerFilePatterns": [
+        "/rebar.config/"
       ],
       "datasourceTemplate": "hex",
       "matchStrings": [
