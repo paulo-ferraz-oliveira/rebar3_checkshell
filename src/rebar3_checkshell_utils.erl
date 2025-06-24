@@ -29,6 +29,8 @@ port_loop(Port, Data) ->
             port_loop(Port, Data ++ MoreData);
         {Port, {exit_status, ExitStatus}} ->
             {ExitStatus, Data}
+    after 60_000 ->
+        {error, timeout}
     end.
 
 -spec log(Level, Format, Args) -> Result when
