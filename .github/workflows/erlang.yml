@@ -19,7 +19,7 @@ jobs:
       # renovate datasource: github-runners, depName: windows
       windows: 2022
       # renovate datasource: github-runners, depName: macos
-      macos: 14
+      macos: 15
 
     steps:
       - run: echo "versions set!"
@@ -36,7 +36,7 @@ jobs:
             os-vsn: ${{ needs.vsns.outputs.ubuntu }}
           - os-base: windows
             os-vsn: ${{ needs.vsns.outputs.windows }}
-          - os-base: macos  # macos, for now, is considered best-effort
+          - os-base: macos
             os-vsn: ${{ needs.vsns.outputs.macos }}
 
     runs-on: ${{matrix.os-base}}-${{matrix.os-vsn}}
@@ -49,15 +49,6 @@ jobs:
         with:
           version-type: strict
           version-file: .tool-versions
-        if: ${{matrix.os-base != 'macos'}}
-
-      - run: |
-          # there be dragons
-          brew update
-          erlang=$(< .tool-versions grep erlang | sed -E 's/erlang ([^\.]+).*/\1/g')
-          brew install "erlang@${erlang}"
-          brew install rebar3
-        if: ${{matrix.os-base == 'macos'}}
 
       - name: Restore _build
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
@@ -68,7 +59,6 @@ jobs:
                 -otp-${{steps.setup-beam.outputs.otp-version}}\
                 -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
                 -hash-${{hashFiles('rebar.lock')}}"
-        if: ${{matrix.os-base != 'macos'}}
 
       - name: Restore rebar3's cache
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
@@ -79,7 +69,6 @@ jobs:
                 -otp-${{steps.setup-beam.outputs.otp-version}}\
                 -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
                 -hash-${{hashFiles('rebar.lock')}}"
-        if: ${{matrix.os-base != 'macos'}}
 
       - name: Check file format
         run: rebar3 fmt --check
