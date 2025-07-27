@@ -17,7 +17,7 @@ jobs:
       # renovate datasource: github-runners, depName: ubuntu
       ubuntu: 24.04
       # renovate datasource: github-runners, depName: windows
-      windows: 2022
+      windows: 2025
       # renovate datasource: github-runners, depName: macos
       macos: 15
 
