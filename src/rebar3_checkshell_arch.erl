@@ -8,7 +8,7 @@
 
 -define(SUCCESS, 0).
 
--type t() :: darwin | linux | win32.
+-type t() :: darwin | linux | windows.
 -export_type([t/0]).
 
 -export_type([nonempty_ubytes/0]).
@@ -47,7 +47,7 @@ result({Failure, AnalysisRes}, _State) ->
     Result :: t().
 t() ->
     Subject = erlang:system_info(system_architecture),
-    RE = ".*(?P<A>darwin|linux|win32).*",
+    RE = ".*(?P<A>darwin|linux|windows).*",
     Options = [{capture, ['A'], list}],
     {match, [Arch]} = re:run(Subject, RE, Options),
     list_to_existing_atom(Arch).

@@ -14,7 +14,7 @@
 -define(LINUX_CHECKSUM,
     <<35, 100, 38, 131, 239, 213, 185, 125, 148, 117, 168, 245, 248, 158, 25, 107>>
 ).
--define(WIN32_CHECKSUM,
+-define(WINDOWS_CHECKSUM,
     <<167, 119, 58, 62, 90, 217, 211, 132, 219, 212, 190, 41, 13, 219, 120, 241>>
 ).
 
@@ -60,7 +60,7 @@ arch_folder_name_for(darwin) ->
     "darwin.x86_64";
 arch_folder_name_for(linux) ->
     "linux.x86_64";
-arch_folder_name_for(win32) ->
+arch_folder_name_for(windows) ->
     "windows.x86".
 
 -spec checkshell_arch_folder_name() -> Result when
@@ -115,7 +115,7 @@ executable_for(darwin) ->
     "shellcheck";
 executable_for(linux) ->
     "shellcheck";
-executable_for(win32) ->
+executable_for(windows) ->
     "shellcheck.exe".
 
 -spec mkdir_arch_cache(Exists) -> Result when
@@ -222,7 +222,7 @@ checksum(true = _CheckSummed, ok = _ExpandResult, State) ->
 do_checksum(Arch, Checksum) when
     (Arch =:= darwin andalso Checksum =:= ?DARWIN_CHECKSUM) orelse
         (Arch =:= linux andalso Checksum =:= ?LINUX_CHECKSUM) orelse
-        (Arch =:= win32 andalso Checksum =:= ?WIN32_CHECKSUM)
+        (Arch =:= windows andalso Checksum =:= ?WINDOWS_CHECKSUM)
 ->
     _ = rebar3_checkshell_utils:log(debug, "checksum is Ok for arch. ~p", [Arch]),
     ok;
@@ -284,7 +284,7 @@ file_type_for(darwin) ->
     tar_xz;
 file_type_for(linux) ->
     tar_xz;
-file_type_for(win32) ->
+file_type_for(windows) ->
     zip.
 
 -spec installer_name(State) -> Result when
@@ -303,6 +303,6 @@ installer_name_for(darwin, State) ->
 installer_name_for(linux, State) ->
     {_IsDefaultVsn, Vsn} = vsn(State),
     "shellcheck-" ++ Vsn ++ ".linux.x86_64.tar.xz";
-installer_name_for(win32, State) ->
+installer_name_for(windows, State) ->
     {_IsDefaultVsn, Vsn} = vsn(State),
     "shellcheck-" ++ Vsn ++ ".zip".
