@@ -1,8 +1,6 @@
 % @private
 -module(rebar3_checkshell_inst).
 
--include("rebar3_checkshell.hrl").
-
 -export([put_executables/1]).
 -export([shellcheck_path/1]).
 
@@ -18,11 +16,9 @@
     <<167, 119, 58, 62, 90, 217, 211, 132, 219, 212, 190, 41, 13, 219, 120, 241>>
 ).
 
--export_type([nonempty_ubytes/0]).
-
 -spec put_executables(State) -> Result when
     State :: rebar_state:t(),
-    Result :: ok | {error, nonempty_ubytes()}.
+    Result :: ok | {error, rebar3_checkshell:nonempty_ubytes()}.
 put_executables(State) ->
     ArchCacheDirExists = filelib:is_dir(arch_cache_dir()),
     CacheDirResult = mkdir_arch_cache(ArchCacheDirExists),
@@ -110,7 +106,7 @@ executable() ->
 -dialyzer({nowarn_function, executable_for/1}).
 -spec executable_for(Arch) -> Result when
     Arch :: rebar3_checkshell_arch:t(),
-    Result :: nonempty_ubytes().
+    Result :: rebar3_checkshell:nonempty_ubytes().
 executable_for(darwin) ->
     "shellcheck";
 executable_for(linux) ->
@@ -156,7 +152,7 @@ mkdir_vsn_cache(false = _Exists, ok = _CacheDirResult, State) ->
 
 -spec download_url(State) -> Result when
     State :: rebar_state:t(),
-    Result :: nonempty_ubytes().
+    Result :: rebar3_checkshell:nonempty_ubytes().
 download_url(State) ->
     {_IsDefaultVsn, Vsn} = vsn(State),
     "https://github.com/koalaman/shellcheck/releases/download/" ++ Vsn ++ "/" ++
@@ -200,7 +196,7 @@ should_checksum(State) ->
     CheckSummed :: boolean(),
     ExpandResult :: ok | {error, file:posix()},
     State :: rebar_state:t(),
-    Result :: ok | {error, nonempty_ubytes()}.
+    Result :: ok | {error, rebar3_checkshell:nonempty_ubytes()}.
 checksum(false = _CheckSummed, _ExpandResult, _State) ->
     _ = rebar3_checkshell_utils:log(warn, "checksum bypass is ON", []),
     ok;
@@ -218,7 +214,7 @@ checksum(true = _CheckSummed, ok = _ExpandResult, State) ->
 -spec do_checksum(Arch, Checksum) -> Result when
     Arch :: rebar3_checkshell_arch:t(),
     Checksum :: binary(),
-    Result :: ok | {error, nonempty_ubytes()}.
+    Result :: ok | {error, rebar3_checkshell:nonempty_ubytes()}.
 do_checksum(Arch, Checksum) when
     (Arch =:= darwin andalso Checksum =:= ?DARWIN_CHECKSUM) orelse
         (Arch =:= linux andalso Checksum =:= ?LINUX_CHECKSUM) orelse
@@ -289,14 +285,14 @@ file_type_for(windows) ->
 
 -spec installer_name(State) -> Result when
     State :: rebar_state:t(),
-    Result :: nonempty_ubytes().
+    Result :: rebar3_checkshell:nonempty_ubytes().
 installer_name(State) ->
     installer_name_for(rebar3_checkshell_arch:t(), State).
 
 -spec installer_name_for(Arch, State) -> Result when
     State :: rebar_state:t(),
     Arch :: rebar3_checkshell_arch:t(),
-    Result :: nonempty_ubytes().
+    Result :: rebar3_checkshell:nonempty_ubytes().
 installer_name_for(darwin, State) ->
     {_IsDefaultVsn, Vsn} = vsn(State),
     "shellcheck-" ++ Vsn ++ ".darwin.x86_64.tar.xz";

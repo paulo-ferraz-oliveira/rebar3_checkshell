@@ -7,6 +7,10 @@
 -export([main/1]).
 -ignore_xref([main/1]).
 
+-type ubyte() :: 1..255.
+-type nonempty_ubytes() :: [ubyte(), ...].
+-export_type([nonempty_ubytes/0]).
+
 -spec init(State) -> Result when
     Result :: {ok, State}.
 init(State) ->
