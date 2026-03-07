@@ -1,8 +1,6 @@
 % @private
 -module(rebar3_checkshell_arch).
 
--include("rebar3_checkshell.hrl").
-
 -export([do/2]).
 -export([t/0]).
 
@@ -11,13 +9,11 @@
 -type t() :: darwin | linux | windows.
 -export_type([t/0]).
 
--export_type([nonempty_ubytes/0]).
-
 -elvis([{elvis_style, no_debug_call, disable}]).
 
 -spec do(Files, State) -> Result when
     Files :: [string()],
-    Result :: {ok, State} | {error, nonempty_ubytes()}.
+    Result :: {ok, State} | {error, rebar3_checkshell:nonempty_ubytes()}.
 do(Files, State) ->
     InstallRes = rebar3_checkshell_inst:put_executables(State),
     do(InstallRes, Files, State).
@@ -36,7 +32,7 @@ do(ok = _InstallRes, Files, State) ->
 -spec result({ExitCode, Analysis}, State) -> Result when
     ExitCode :: non_neg_integer(),
     Analysis :: string(),
-    Result :: {ok, State} | {error, nonempty_ubytes()}.
+    Result :: {ok, State} | {error, rebar3_checkshell:nonempty_ubytes()}.
 result({?SUCCESS, _AnalysisRes}, State) ->
     {ok, State};
 result({Failure, AnalysisRes}, _State) ->

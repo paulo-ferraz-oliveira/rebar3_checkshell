@@ -1,8 +1,6 @@
 % @private
 -module(rebar3_checkshell_prv).
 
--include("rebar3_checkshell.hrl").
-
 -export([init/1]).
 -ignore_xref([init/1]).
 
@@ -25,8 +23,6 @@
 -ignore_xref([opt/3]).
 
 -define(PROVIDER, checkshell).
-
--export_type([nonempty_ubytes/0]).
 
 -type opt() :: atom() | list() | string() | integer() | true.
 -export_type([opt/0]).
@@ -51,7 +47,7 @@ init(State) ->
     {ok, rebar_state:add_provider(State, Provider)}.
 
 -spec do(State) -> Result when
-    Result :: {ok, State} | {error, nonempty_ubytes()}.
+    Result :: {ok, State} | {error, rebar3_checkshell:nonempty_ubytes()}.
 do(State) ->
     FilesFromCLI = files_from_cli(State),
     FilesFromRebarConfig = files_from_rebar_config(State),
@@ -61,7 +57,7 @@ do(State) ->
 
 -spec do_for(Files, State) -> Result when
     Files :: [string()],
-    Result :: {ok, State} | {error, nonempty_ubytes()}.
+    Result :: {ok, State} | {error, rebar3_checkshell:nonempty_ubytes()}.
 do_for(Files, State) ->
     _ = rebar3_checkshell_utils:log(
         info, "analysis starting. This may take a while...", []
