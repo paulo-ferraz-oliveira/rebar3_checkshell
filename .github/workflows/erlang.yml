@@ -75,4 +75,4 @@ jobs:
         if: ${{matrix.os-base != 'windows'}}
 
       - name: Continuous Integration
-        run: rebar3 as test ci
+        run: rebar3 ci
