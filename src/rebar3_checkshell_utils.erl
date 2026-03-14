@@ -8,6 +8,8 @@
 -elvis([{elvis_style, no_debug_call, #{ignore => [{rebar3_checkshell_utils, ct_pal_log}]}}]).
 -hank([{unnecessary_function_arguments, [{ct_pal_log, 3}]}]).
 
+-ignore_xref([{rebar_log, log, 3}]).
+
 -spec cmd(Cmd, Args) -> Result when
     Cmd :: string(),
     Args :: [string()],

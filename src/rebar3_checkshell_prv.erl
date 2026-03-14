@@ -27,6 +27,8 @@
 -type opt() :: atom() | list() | string() | integer() | true.
 -export_type([opt/0]).
 
+-ignore_xref([{rebar_state, command_parsed_args, 1}]).
+
 -spec init(State) -> Result when
     Result :: {ok, State}.
 init(State) ->
