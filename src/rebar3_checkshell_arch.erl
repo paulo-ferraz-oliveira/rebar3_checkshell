@@ -122,7 +122,7 @@ opt(UnknownOption) ->
     Failure :: pos_integer(),
     AnalysisRes :: string(),
     Result :: ok.
-output_shellcheck_analysis(1 = _Failure, AnalysisRes) when length(AnalysisRes) > 1 ->
+output_shellcheck_analysis(1 = _Failure, [_ | _] = AnalysisRes) ->
     io:format("~s", [string:sub_string(AnalysisRes, 2)]);
 output_shellcheck_analysis(_Failure, AnalysisRes) ->
     rebar3_checkshell_utils:log(warn, "~p", [AnalysisRes], false).
