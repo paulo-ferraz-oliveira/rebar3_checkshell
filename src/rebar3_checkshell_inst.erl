@@ -16,6 +16,8 @@
     <<167, 119, 58, 62, 90, 217, 211, 132, 219, 212, 190, 41, 13, 219, 120, 241>>
 ).
 
+-ignore_xref([{rebar_dir, global_cache_dir, 1}]).
+
 -spec put_executables(State) -> Result when
     State :: rebar_state:t(),
     Result :: ok | {error, rebar3_checkshell:nonempty_ubytes()}.
