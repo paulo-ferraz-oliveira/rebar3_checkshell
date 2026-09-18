@@ -12,10 +12,10 @@ name: Erlang CI
 
 jobs:
   vsns:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       # renovate datasource: github-runners, depName: ubuntu
-      ubuntu: 24.04
+      ubuntu: 26.04
       # renovate datasource: github-runners, depName: windows
       windows: 2025
       # renovate datasource: github-runners, depName: macos
